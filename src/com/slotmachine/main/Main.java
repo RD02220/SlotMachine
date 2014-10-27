@@ -39,7 +39,7 @@ public class Main {
 	public Main() throws Exception {
 		try {
 			Display.setDisplayMode(new DisplayMode(640, 480));
-			Display.setTitle("Basic LWJGL Display");
+			Display.setTitle("The Slot Machine");
 			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
