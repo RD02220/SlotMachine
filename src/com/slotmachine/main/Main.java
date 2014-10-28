@@ -30,7 +30,7 @@ public class Main {
 	Boolean isDown = false, isDown2 = false;
 
 	// Font Variables
-	// public TrueTypeFont font;
+	public TrueTypeFont font;
 
 	// Display Variables
 	boolean vsync = false;
@@ -41,14 +41,7 @@ public class Main {
 	// Timing and FPS Variables
 	long lastFrame, lastFPS;
 	int fps;
-
-	// World Variables
-	int worldID = 0;
-	public static boolean editMap = false;
-	public static boolean placeObjects = false;
-
-	// Player Variables
-
+	
 	public Main() throws Exception {
 		try {
 			Display.setDisplayMode(new DisplayMode(640, 480));
