@@ -23,15 +23,12 @@ public class WinMinorDiagonal extends WinBehavior {
 	}
 	
 	/**
-	 * Class constructor that takes as arguments three arrays
-	 * of reels that represent the visible portion of the
-	 * slot machine.
-	 * @param first First visible slot of symbols
-	 * @param middle Middle visible slot of symbols
-	 * @param last Last visible slot of symbols
+	 * Class constructor that takes as arguments a 2D array
+	 * of symbols that represent the reel display.
+	 * @param reelDisplay The visible display of the reels.
 	 */
-	public WinMinorDiagonal(Symbol[] first, Symbol[] middle, Symbol[] last) {
-		super(first, middle, last);
+	public WinMinorDiagonal(Symbol[][] reelDisplay) {
+		super(reelDisplay);
 	}
 	
 	@Override
@@ -44,7 +41,12 @@ public class WinMinorDiagonal extends WinBehavior {
 		boolean secondCondition = reelDisplay[1][1].toString().equals(
 				reelDisplay[0][2].toString());
 		
-		return firstCondition && secondCondition;
+		if (firstCondition && secondCondition) {
+			System.out.println("WINNER (minor diagonal)");
+			return true;
+		}
+		
+		return false;
 	}
 
 }

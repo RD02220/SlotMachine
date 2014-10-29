@@ -24,15 +24,12 @@ public class WinMiddleRow extends WinBehavior {
 	}
 	
 	/**
-	 * Class constructor that takes as arguments three arrays
-	 * of reels that represent the visible portion of the
-	 * slot machine.
-	 * @param first First visible reel of symbols
-	 * @param middle Middle visible reel of symbols
-	 * @param last Last visible reel of symbols
+	 * Class constructor that takes as arguments a 2D array
+	 * of symbols that represent the reel display.
+	 * @param reelDisplay The visible display of the reels.
 	 */
-	public WinMiddleRow(Symbol[] first, Symbol[] middle, Symbol[] last) {
-		super(first, middle, last);
+	public WinMiddleRow(Symbol[][] reelDisplay) {
+		super(reelDisplay);
 	}
 
 	@Override
@@ -45,7 +42,12 @@ public class WinMiddleRow extends WinBehavior {
 		boolean secondCondition = reelDisplay[1][1].toString().equals(
 				reelDisplay[2][1].toString());
 		
-		return firstCondition && secondCondition;
+		if (firstCondition && secondCondition) {
+			System.out.println("WINNER (middle row)");
+			return true;
+		}
+		
+		return false;
 	}
 
 }

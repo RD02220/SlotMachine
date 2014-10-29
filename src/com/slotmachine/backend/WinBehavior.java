@@ -29,18 +29,8 @@ public abstract class WinBehavior {
 		reelDisplay = new Symbol[3][3];
 	}
 	
-	/**
-	 * Class constructor overload that takes as arguments
-	 * three arrays of symbols.
-	 * @param first First visible reel of symbols.
-	 * @param middle Middle visible reel of symbols.
-	 * @param last Last visible reel of symbols.
-	 */
-	public WinBehavior(Symbol[] first, Symbol[] middle, Symbol[] last) {
-		this();
-		reelDisplay[0] = first;
-		reelDisplay[1] = middle;
-		reelDisplay[2] = last;
+	public WinBehavior(Symbol[][] reelDisplay) {
+		this.reelDisplay = reelDisplay;
 	}
 	
 	/**

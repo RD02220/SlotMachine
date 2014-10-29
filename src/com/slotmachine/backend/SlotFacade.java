@@ -70,7 +70,7 @@ public class SlotFacade {
 		symbolDisplay[2] = reels[2].getRandomTriplet();
 		display();
 		if (checkWinner()) {
-			System.out.println("WINNER!\n");
+			System.out.println();
 			numberOfWins++;
 		}
 	}
@@ -81,19 +81,7 @@ public class SlotFacade {
 	 * @return Winner is found.
 	 */
 	public boolean checkWinner() {
-		boolean majorDiagonal = new WinMajorDiagonal(
-				symbolDisplay[0], 
-				symbolDisplay[1], 
-				symbolDisplay[2]).isWinner();
-		boolean middle = new WinMiddleRow(
-				symbolDisplay[0], 
-				symbolDisplay[1], 
-				symbolDisplay[2]).isWinner();
-		boolean minorDiagonal = new WinMinorDiagonal(
-				symbolDisplay[0], 
-				symbolDisplay[1], 
-				symbolDisplay[2]).isWinner();
-		return majorDiagonal || middle || minorDiagonal;
+		return new WinContext(symbolDisplay).checkWinner();
 	}
 	
 	/**
