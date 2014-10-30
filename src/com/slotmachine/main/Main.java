@@ -20,12 +20,14 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
 
+import com.slotmachine.menu.MainMenu;
+
 public class Main {
 	// Client Variables
 	public static int WD, HT;
 
 	// Button Event Variables
-	Boolean isDown = false, isDown2 = false;
+	Boolean isDown = false, isDown2 = false, ended = false;
 
 	// Memory Variables
 	private static final long MEGABYTE = 1024L * 1024L;
@@ -33,6 +35,12 @@ public class Main {
 	// Timing and FPS Variables
 	long lastFrame, lastFPS;
 	int fps;
+
+	// Menu variables
+	public static MainMenu m;
+
+	// Game State
+	private static GameState gameState = GameState.STARTUPLOADING;
 
 	public Main() throws Exception {
 		try {
@@ -47,14 +55,34 @@ public class Main {
 			Display.destroy();
 			System.exit(1);
 		}
-		while (!Display.isCloseRequested()) {
-			Display.update();
-			Display.sync(60);
+		gameloop();
+	}
+
+	public void gameloop() throws IOException {
+		yse: while (!Display.isCloseRequested()) {
 			WD = Display.getWidth();
 			HT = Display.getHeight();
+			if (ended)
+				break;
+			switch (gameState) {
+			case LOGIN:
+				// Database login code here
+			case STARTUPLOADING:
+				m = new MainMenu();
+				gameState = GameState.MAINMENU;
+			case MAINMENU:
+				if (!m.getIsExited()) {
+					m.drawMainMenu();
+					Display.update();
+					Display.sync(60);
+				} else
+					break yse;
+			default:
+				break;
+
+			}
 		}
 		Display.destroy();
-		System.exit(0);
 	}
 
 	public static BufferedImage glScreenshot() {
