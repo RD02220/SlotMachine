@@ -23,8 +23,6 @@ import org.newdawn.slick.*;
 public class Main {
 	// Client Variables
 	public static int WD, HT;
-	public static double xVariation = 0;
-	public Boolean drawInfo = false;
 
 	// Button Event Variables
 	Boolean isDown = false, isDown2 = false;
@@ -38,7 +36,10 @@ public class Main {
 
 	public Main() throws Exception {
 		try {
-			Display.setDisplayMode(new DisplayMode(640, 480));
+			WD = 800;
+			HT = 600;
+			Display.setResizable(true);
+			Display.setDisplayMode(new DisplayMode(WD, HT));
 			Display.setTitle("The Slot Machine");
 			Display.create();
 		} catch (LWJGLException e) {
@@ -49,6 +50,8 @@ public class Main {
 		while (!Display.isCloseRequested()) {
 			Display.update();
 			Display.sync(60);
+			WD = Display.getWidth();
+			HT = Display.getHeight();
 		}
 		Display.destroy();
 		System.exit(0);
