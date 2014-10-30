@@ -6,47 +6,24 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
 import com.slotmachine.api.Images;
-import com.slotmachine.main.GameState;
 import com.slotmachine.main.Main;
-import com.slotmachine.menu.components.MenuButton;
-import com.slotmachine.menu.components.TextBox;
+import com.slotmachine.menu.components.Button;
+import com.slotmachine.menu.components.MenuTextBox;
 
-public class MainMenu {
+public class OptionsMenu {
 	public static MenuTextures textureLoader;
-	MenuButton start, options, aboutus, exit;
-	TextBox box;
-	Boolean isExited = false, isOnScreen = true, pressedSingle = false;
+	Button playSounds;
+	MenuTextBox textBox;
+	Boolean isExited = false, isOnScreen = false, pressedSingle = false;
 
-	public MainMenu() throws IOException {
-
-		textureLoader = new MenuTextures();
-		start = new MenuButton("Start Playing", 0);
-		options = new MenuButton("Options", 1);
-		aboutus = new MenuButton("About Us", 2);
-		exit = new MenuButton("Exit", 3);
-		box = new TextBox("Merlin's Ghost", "Lets play some slots!",
-				(Main.getWidth() / 2) + 15, 225);
+	public OptionsMenu() throws IOException {
+		textureLoader = MainMenu.textureLoader;
+		playSounds = new Button("Test", 0, 0);
+		textBox = new MenuTextBox("Starting Text", false, false, 20, 100);
 	}
 
 	public void drawMainMenu() {
 		if (isOnScreen) {
-			if (start.isActivated()) {
-				System.out.println("Start " + isOnScreen);
-				pressedSingle = true;
-				isOnScreen = false;
-				isExited = true;
-				// Start slot machine
-			} else if (options.isActivated()) {
-				System.out.println("Options Menu display: " + isOnScreen);
-				pressedSingle = true;
-				isOnScreen = false;
-				Main.o.setOnScreen(true);
-				Main.setState(GameState.OPTIONSMENU);
-			} else if (aboutus.isActivated()) {
-				// About Us menu
-			} else if (exit.isActivated()) {
-				setIsExited(true);
-			}
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 			GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -75,28 +52,8 @@ public class MainMenu {
 			} else
 				Images.drawImage(textureLoader.logo, (Main.getWidth() / 2)
 						- (textureLoader.logo.getImageWidth() / 2), 75);
-			start.draw();
-			options.draw();
-			aboutus.draw();
-			exit.draw();
-			if (start.isHovered()) {
-				box.setTitle("Start");
-				box.setBodyText("Lets play some slots!");
-			} else if (options.isHovered()) {
-				box.setTitle("Options");
-				box.setBodyText("Select your options here!/n"
-						+ "Graphical, Sounds, Music, etc.");
-			} else if (options.isHovered()) {
-				box.setTitle("Options");
-				box.setBodyText("Edit your individual video, memory, sound and \nother options here!");
-			} else if (aboutus.isHovered()) {
-				box.setTitle("About Us");
-				box.setBodyText("Matt Stratton/nRyan DeBerardino/nO'Neal Jones/nChad Golden");
-			} else if (exit.isHovered()) {
-				box.setTitle("Exit Merlin's Ghost?");
-				box.setBodyText("Exit the game? (But why would you want too?)");
-			}
-			box.draw();
+			playSounds.draw();
+			textBox.draw();
 		}
 	}
 
@@ -120,5 +77,13 @@ public class MainMenu {
 
 	public void setIsExited(Boolean isExited) {
 		this.isExited = isExited;
+	}
+
+	public Boolean isOnScreen() {
+		return isOnScreen;
+	}
+
+	public void setOnScreen(boolean b) {
+		isOnScreen = b;
 	}
 }

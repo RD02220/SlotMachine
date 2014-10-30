@@ -125,7 +125,6 @@ public class Reel implements Iterable<Symbol> {
 	 * UnsupportedOperationException("Method not supported."); }
 	 */
 
-	@Override
 	public Iterator<Symbol> iterator() {
 		return new SymbolIterator();
 	}
@@ -169,12 +168,10 @@ public class Reel implements Iterable<Symbol> {
 		 * UnsupportedOperationException
 		 * ("Method forEachRemaining() not supported."); }
 		 */
-		@Override
 		public boolean hasNext() {
 			return (currentIndex < symbols.size());
 		}
 
-		@Override
 		public Symbol next() {
 			return (hasNext()) ? symbols.get(currentIndex++) : null;
 		}

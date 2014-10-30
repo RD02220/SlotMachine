@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
 
 import com.slotmachine.menu.MainMenu;
+import com.slotmachine.menu.OptionsMenu;
 
 public class Main {
 	// Client Variables
@@ -38,6 +39,7 @@ public class Main {
 
 	// Menu variables
 	public static MainMenu m;
+	public static OptionsMenu o;
 
 	// Game State
 	private static GameState gameState = GameState.STARTUPLOADING;
@@ -59,7 +61,7 @@ public class Main {
 	}
 
 	public void gameloop() throws IOException {
-		yse: while (!Display.isCloseRequested()) {
+		while (!Display.isCloseRequested()) {
 			WD = Display.getWidth();
 			HT = Display.getHeight();
 			if (ended)
@@ -69,14 +71,26 @@ public class Main {
 				// Database login code here
 			case STARTUPLOADING:
 				m = new MainMenu();
+				o = new OptionsMenu();
 				gameState = GameState.MAINMENU;
 			case MAINMENU:
-				if (!m.getIsExited()) {
+				if (!m.getIsExited() && !o.isOnScreen()) {
 					m.drawMainMenu();
 					Display.update();
 					Display.sync(60);
-				} else
-					break yse;
+				}
+				if (m.getIsExited()) {
+					Display.destroy();
+					System.exit(0);
+				}
+			case OPTIONSMENU:
+				if (o.isOnScreen()) {
+					o.drawMainMenu();
+					Display.update();
+					Display.sync(60);
+				}
+			case SLOTMACHINE:
+
 			default:
 				break;
 
@@ -128,6 +142,10 @@ public class Main {
 			}
 		}
 		return ByteBuffer.wrap(imageBytes);
+	}
+
+	public static void setState(GameState gs) {
+		gameState = gs;
 	}
 
 	public static long bytesToMegabytes(long bytes) {

@@ -41,7 +41,7 @@ public class TextBox implements Component {
 			}
 		} else
 			yPos = 225;
-		// Images.drawImage(MainMenu.textureLoader.textBox, xPos, yPos);
+		Images.drawImage(MainMenu.textureLoader.textBox, xPos, yPos);
 		Color.white.bind();
 		MainMenu.textureLoader.textBoxTitle.drawString(
 				xPos
