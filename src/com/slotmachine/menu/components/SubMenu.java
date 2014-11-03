@@ -56,7 +56,8 @@ public class SubMenu implements Component {
 			if (Mouse.isButtonDown(0)
 					&& header.contains(new Point(Mouse.getX(), Main.getHeight()
 							- Mouse.getY())) && !clickedWithin) {
-				System.out.println("Clicked Within");
+				System.out.println("Clicked Within: " + x + " " + y + " "
+						+ lastX + " " + lastY + " " + dragX + " " + dragY);
 				clickedWithin = true;
 				lastX = Mouse.getX();
 				lastY = (Main.getHeight() - Mouse.getY());
@@ -64,6 +65,8 @@ public class SubMenu implements Component {
 				dragX = Mouse.getX() - lastX;
 				dragY = (Main.getHeight() - Mouse.getY()) - lastY;
 			} else if (!Mouse.isButtonDown(0) && clickedWithin) {
+				System.out.println("Let Go: " + x + " " + y + " " + lastX + " "
+						+ lastY + " " + dragX + " " + dragY);
 				clickedWithin = false;
 				lastX = 0;
 				lastY = 0;
