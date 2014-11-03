@@ -63,8 +63,9 @@ public class Button implements Component {
 		Rectangle r = new Rectangle(getX(), getY(),
 				(int) MainMenu.textureLoader.button.getImageWidth(),
 				(int) MainMenu.textureLoader.button.getImageHeight());
-		if (r.contains(Mouse.getX(), (Main.getHeight() - Mouse.getY())))
-			return true;
+		if (!MainMenu.overSubmenu())
+			if (r.contains(Mouse.getX(), (Main.getHeight() - Mouse.getY())))
+				return true;
 		return false;
 	}
 

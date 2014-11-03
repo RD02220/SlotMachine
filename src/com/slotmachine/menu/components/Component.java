@@ -13,4 +13,6 @@ public interface Component {
 	public abstract int getY();
 
 	public abstract void setY(int y);
+
+	public abstract void draw();
 }

@@ -48,7 +48,7 @@ public class MenuButton implements Component {
 					+ (bNumber * 5);
 		if (isHovered())
 			Images.drawImage(MainMenu.textureLoader.buttonHover, xPos, yPos);
-		if (!isHovered()   )
+		if (!isHovered())
 			Images.drawImage(MainMenu.textureLoader.button, xPos, yPos);
 		if (setSelected()) {
 			hit = true;
@@ -88,8 +88,9 @@ public class MenuButton implements Component {
 		Rectangle r = new Rectangle(getX(), getY(),
 				(int) MainMenu.textureLoader.button.getImageWidth(),
 				(int) MainMenu.textureLoader.button.getImageHeight());
-		if (r.contains(Mouse.getX(), (Main.getHeight() - Mouse.getY())))
-			return true;
+		if (!MainMenu.overSubmenu())
+			if (r.contains(Mouse.getX(), (Main.getHeight() - Mouse.getY())))
+				return true;
 		return false;
 	}
 
