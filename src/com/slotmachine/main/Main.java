@@ -82,6 +82,10 @@ public class Main {
 					Display.update();
 					Display.sync(60);
 				}
+				if (m.getIsExited()) {
+					Display.destroy();
+					System.exit(0);
+				}
 			case OPTIONSMENU:
 				if (o.isOnScreen()) {
 					o.drawMainMenu();
@@ -89,7 +93,7 @@ public class Main {
 					Display.sync(60);
 				}
 			case SLOTMACHINE:
-				if (slot.isOnScreen() && m.getIsExited()) {
+				if (slot.isOnScreen()) {
 					slot.drawMainMenu();
 					Display.update();
 					Display.sync(60);

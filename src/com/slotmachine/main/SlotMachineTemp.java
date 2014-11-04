@@ -16,21 +16,37 @@ public class SlotMachineTemp {
 	TextBox box;
 	Boolean isExited = false, isOnScreen = false, pressedSingle = false;
 
-	Button t;
-	Label currencyCounter;
+	Button lever, mainMenu;
+	Label currencyCounter, reel1, reel2, reel3, winner;
+	Boolean started = false;
 
 	public SlotMachineTemp() throws IOException {
-		t = new Button("Pull Lever", (Main.getWidth() / 2)
+		lever = new Button("Pull Lever", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2), 400);
+		mainMenu = new Button("Back to Main Menu", (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2), 450);
 		currencyCounter = new Label("Currency: " + Main.currency,
 				(Main.getWidth() / 2)
 						- (MainMenu.textureLoader.button.getImageWidth() / 2)
 						+ 90, 375);
+		reel1 = new Label("", (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110,
+				250);
+		reel2 = new Label("", (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110,
+				270);
+		reel3 = new Label("", (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110,
+				290);
+		winner = new Label("WINNER!", (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100,
+				320, Color.red);
 	}
 
-	Boolean pulled = false;
+	Boolean pulled = false, checkWin = false, mainMenuButton = false;
 
 	public void drawMainMenu() {
+		SlotFacade player = new SlotFacade();
 		if (isOnScreen) {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -69,25 +85,53 @@ public class SlotMachineTemp {
 						(Main.getWidth() / 2)
 								- (MainMenu.textureLoader.logo.getImageWidth() / 2),
 						75);
-			t.draw();
-			if (t.isActivated() && !pulled) {
+			lever.draw();
+			if (lever.isActivated() && !pulled) {
+				started = true;
 				pulled = true;
 				System.out.println("Pulling Lever");
-				// Create a SlotFacade
-				SlotFacade player = new SlotFacade();
+				player.pullLever();
+				reel1.setLabel(player.getReelOne());
+				reel2.setLabel(player.getReelTwo());
+				reel3.setLabel(player.getReelThree());
+				checkWin = player.checkWinner();
 
-				// Counters
-				int numberOfTries = 0;
-				double winPercent;
-
-				// Loop tries.
-				while (numberOfTries++ < 1) {
-					player.pullLever();
-				}
-			} else if (!t.isActivated() && pulled) {
+			} else if (!lever.isActivated() && pulled) {
 				pulled = false;
 			}
+			if (mainMenu.isActivated() && !mainMenuButton) {
+				isOnScreen = false;
+				Main.m.setOnScreen(true);
+				Main.setState(GameState.MAINMENU);
+
+			} else if (!mainMenu.isActivated() && mainMenuButton) {
+				mainMenuButton = false;
+			}
+			reel1.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
+			reel2.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
+			reel3.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
+			lever.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2));
+			currencyCounter.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 90);
+			winner.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100);
 			currencyCounter.draw();
+			reel1.draw();
+			reel2.draw();
+			reel3.draw();
+			mainMenu.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2));
+			mainMenu.draw();
+			if (started) {
+				if (checkWin) {
+					winner.draw();
+				}
+			}
+
 		}
 	}
 

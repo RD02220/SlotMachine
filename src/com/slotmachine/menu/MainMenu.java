@@ -58,7 +58,6 @@ public class MainMenu {
 				System.out.println("Start " + isOnScreen);
 				pressedSingle = true;
 				isOnScreen = false;
-				isExited = true;
 				Main.slot.setOnScreen(true);
 				Main.setState(GameState.SLOTMACHINE);
 			} else if (options.isActivated()) {
@@ -213,5 +212,9 @@ public class MainMenu {
 	public static Boolean overSubmenu() {
 
 		return login.isWithin() || createAccount.isWithin();
+	}
+
+	public void setOnScreen(Boolean onScreens) {
+		isOnScreen = onScreens;
 	}
 }

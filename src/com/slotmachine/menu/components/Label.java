@@ -1,16 +1,26 @@
 package com.slotmachine.menu.components;
 
 import com.slotmachine.menu.MainMenu;
+import org.newdawn.slick.Color;
 
 public class Label implements Component {
 
 	int x = 0, y = 0;
 	String label = "";
+	Color color;
 
 	public Label(String theLabel, int xPos, int yPos) {
 		label = theLabel;
 		x = xPos;
 		y = yPos;
+		color = Color.white;
+	}
+
+	public Label(String theLabel, int xPos, int yPos, Color c) {
+		label = theLabel;
+		x = xPos;
+		y = yPos;
+		color = c;
 	}
 
 	@Override
@@ -50,7 +60,7 @@ public class Label implements Component {
 
 	@Override
 	public void draw() {
-		MainMenu.textureLoader.textBoxTitle.drawString(x, y, label);
+		MainMenu.textureLoader.textBoxTitle.drawString(x, y, label, color);
 	}
 
 }
