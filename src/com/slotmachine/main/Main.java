@@ -26,6 +26,7 @@ import com.slotmachine.menu.OptionsMenu;
 public class Main {
 	// Client Variables
 	public static int WD, HT;
+	public static int currency = 100;
 
 	// Button Event Variables
 	Boolean isDown = false, isDown2 = false, ended = false;
@@ -40,6 +41,7 @@ public class Main {
 	// Menu variables
 	public static MainMenu m;
 	public static OptionsMenu o;
+	public static SlotMachineTemp slot;
 
 	// Game State
 	private static GameState gameState = GameState.STARTUPLOADING;
@@ -72,16 +74,13 @@ public class Main {
 			case STARTUPLOADING:
 				m = new MainMenu();
 				o = new OptionsMenu();
+				slot = new SlotMachineTemp();
 				gameState = GameState.MAINMENU;
 			case MAINMENU:
-				if (!m.getIsExited() && !o.isOnScreen()) {
+				if (!m.getIsExited() && !o.isOnScreen() && !slot.isOnScreen()) {
 					m.drawMainMenu();
 					Display.update();
 					Display.sync(60);
-				}
-				if (m.getIsExited()) {
-					Display.destroy();
-					System.exit(0);
 				}
 			case OPTIONSMENU:
 				if (o.isOnScreen()) {
@@ -90,7 +89,11 @@ public class Main {
 					Display.sync(60);
 				}
 			case SLOTMACHINE:
-
+				if (slot.isOnScreen() && m.getIsExited()) {
+					slot.drawMainMenu();
+					Display.update();
+					Display.sync(60);
+				}
 			default:
 				break;
 

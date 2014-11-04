@@ -32,6 +32,7 @@ public class SubMenu implements Component {
 
 	Boolean clickedWithin = false;
 	int lastX = 0, lastY = 0;
+	boolean insideBox = false;
 
 	public void draw() {
 		if (opened) {
@@ -53,23 +54,55 @@ public class SubMenu implements Component {
 			}
 			Rectangle header = new Rectangle(x + dragX, y + dragY,
 					MainMenu.textureLoader.subMenu.getImageWidth(), 17);
+			Rectangle inside = new Rectangle(x + dragX, y + dragY,
+					MainMenu.textureLoader.subMenu.getImageWidth(),
+					MainMenu.textureLoader.subMenu.getImageHeight());
+			if (inside.contains(new Point(Mouse.getX(), Mouse.getY())))
+				insideBox = true;
+			else
+				insideBox = false;
 			if (Mouse.isButtonDown(0)
 					&& header.contains(new Point(Mouse.getX(), Main.getHeight()
 							- Mouse.getY())) && !clickedWithin) {
+				insideBox = true;
 				System.out.println("Clicked Within: " + x + " " + y + " "
 						+ lastX + " " + lastY + " " + dragX + " " + dragY);
 				clickedWithin = true;
-				lastX = Mouse.getX();
-				lastY = (Main.getHeight() - Mouse.getY());
+				lastX = Mouse.getX() - dragX;
+				lastY = (Main.getHeight() - Mouse.getY()) - dragY;
 			} else if (Mouse.isButtonDown(0) && clickedWithin) {
-				dragX = Mouse.getX() - lastX;
-				dragY = (Main.getHeight() - Mouse.getY()) - lastY;
+				insideBox = true;
+				if (Mouse.getX() - lastX > 0
+						&& Mouse.getX() - lastX < Main.getWidth()
+								- MainMenu.textureLoader.subMenu
+										.getImageWidth())
+					dragX = Mouse.getX() - lastX;
+				else if (Mouse.getX() - lastX < 0)
+					dragX = 0;
+				else if (Mouse.getX() - lastX > Main.getWidth()
+						- MainMenu.textureLoader.subMenu.getImageWidth()) {
+					dragX = Main.getWidth()
+							- MainMenu.textureLoader.subMenu.getImageWidth();
+				}
+				if ((Main.getHeight() - Mouse.getY()) - lastY > 0
+						&& (Main.getHeight() - Mouse.getY()) - lastY < Main
+								.getHeight()
+								- MainMenu.textureLoader.subMenu
+										.getImageHeight())
+					dragY = (Main.getHeight() - Mouse.getY()) - lastY;
+				else if ((Main.getHeight() - Mouse.getY()) - lastY < 0)
+					dragY = 0;
+				else if ((Main.getHeight() - Mouse.getY()) - lastY > Main
+						.getHeight()
+						- MainMenu.textureLoader.subMenu.getImageHeight()) {
+					dragY = Main.getHeight()
+							- MainMenu.textureLoader.subMenu.getImageHeight();
+				}
 			} else if (!Mouse.isButtonDown(0) && clickedWithin) {
+				insideBox = true;
+				clickedWithin = false;
 				System.out.println("Let Go: " + x + " " + y + " " + lastX + " "
 						+ lastY + " " + dragX + " " + dragY);
-				clickedWithin = false;
-				lastX = 0;
-				lastY = 0;
 			}
 		}
 	}
@@ -125,6 +158,7 @@ public class SubMenu implements Component {
 				MainMenu.textureLoader.subMenu.getImageWidth(),
 				MainMenu.textureLoader.subMenu.getImageHeight());
 		return header.contains(new Point(Mouse.getX(), Main.getHeight()
-				- Mouse.getY()));
+				- Mouse.getY()))
+				|| insideBox;
 	}
 }

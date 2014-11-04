@@ -10,13 +10,13 @@ import com.slotmachine.api.PlayerKeyboard;
 import com.slotmachine.main.Main;
 import com.slotmachine.menu.MainMenu;
 
-public class MenuTextBox implements Component {
+public class MenuTextBoxV2 implements Component {
 
 	private String toolTip = "", startText = "";
 	private int xPos = 0, yPos = 0;
 	private Boolean isFocused = false, clearOnClick = false;
 
-	public MenuTextBox(String startingText, Boolean clearOnFirstClick,
+	public MenuTextBoxV2(String startingText, Boolean clearOnFirstClick,
 			Boolean isStarFocused, int x, int y) {
 		startText = startingText;
 		xPos = x;
@@ -131,11 +131,11 @@ public class MenuTextBox implements Component {
 			Images.drawImage(MainMenu.textureLoader.writeTextBox, xPos, yPos);
 
 			if (timeFlash - lastFlash < 500) {
-				MainMenu.textureLoader.font.drawString(xPos + 9, yPos + 6,
-						startText + "_");
+				MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+						yPos + 3, startText + "_");
 			} else {
-				MainMenu.textureLoader.font.drawString(xPos + 9, yPos + 6,
-						startText);
+				MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+						yPos + 3, startText);
 				if (timeFlash - lastFlash > 1000) {
 					lastFlash = System.currentTimeMillis();
 				}
@@ -143,7 +143,7 @@ public class MenuTextBox implements Component {
 
 		} else {
 			Images.drawImage(MainMenu.textureLoader.writeTextBox, xPos, yPos);
-			MainMenu.textureLoader.font.drawString(xPos + 9, yPos + 9,
+			MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9, yPos + 3,
 					startText);
 		}
 

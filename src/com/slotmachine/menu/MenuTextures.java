@@ -43,11 +43,8 @@ public class MenuTextures {
 								.getResourceAsStream("textures/Menus/Components/ButtonHover.png"));
 		textBox = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/Menus/Components/TextBox.png"));
-		writeTextBox = TextureLoader
-				.getTexture(
-						"PNG",
-						ResourceLoader
-								.getResourceAsStream("textures/Menus/Components/MenuTextBox.png"));
+		writeTextBox = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/Menus/Components/TextBox2.png"));
 		subMenu = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/Menus/Components/SubMenu.png"));
 	}

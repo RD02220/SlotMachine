@@ -14,6 +14,7 @@ import com.slotmachine.main.Main;
 import com.slotmachine.menu.components.Button;
 import com.slotmachine.menu.components.MenuButton;
 import com.slotmachine.menu.components.MenuTextBox;
+import com.slotmachine.menu.components.MenuTextBoxV2;
 import com.slotmachine.menu.components.SubMenu;
 import com.slotmachine.menu.components.TextBox;
 
@@ -23,16 +24,25 @@ public class MainMenu {
 	TextBox box;
 	Boolean isExited = false, isOnScreen = true, pressedSingle = false;
 
-	public static SubMenu login;
+	public static SubMenu login, createAccount;
 
 	public MainMenu() throws IOException {
 
 		textureLoader = new MenuTextures();
 		login = new SubMenu("Login", true, true, false, 0, 0);
-		login.addComponent(new MenuTextBox("Username", false, false, 20, 40));
-		login.addComponent(new MenuTextBox("Password", false, false, 20, 85));
-		login.addComponent(new Button("Login", 60, 130));
-
+		login.addComponent(new MenuTextBoxV2("Username", false, false, 35, 25));
+		login.addComponent(new MenuTextBoxV2("Password", false, false, 35, 52));
+		login.addComponent(new Button("Login", 55, 80));
+		createAccount = new SubMenu("Create Account", true, true, false, 0, 0);
+		createAccount.addComponent(new MenuTextBoxV2("Username", false, false,
+				35, 25));
+		createAccount.addComponent(new MenuTextBoxV2("Password", false, false,
+				35, 52));
+		createAccount.addComponent(new MenuTextBoxV2("Password Re-Entry",
+				false, false, 35, 79));
+		createAccount.addComponent(new MenuTextBoxV2("Email", false, false, 35,
+				106));
+		createAccount.addComponent(new Button("Create Account", 55, 134));
 		start = new MenuButton("Start Playing", 0);
 		options = new MenuButton("Options", 1);
 		aboutus = new MenuButton("About Us", 2);
@@ -49,7 +59,8 @@ public class MainMenu {
 				pressedSingle = true;
 				isOnScreen = false;
 				isExited = true;
-				// Start slot machine
+				Main.slot.setOnScreen(true);
+				Main.setState(GameState.SLOTMACHINE);
 			} else if (options.isActivated()) {
 				System.out.println("Options Menu display: " + isOnScreen);
 				pressedSingle = true;
@@ -118,6 +129,8 @@ public class MainMenu {
 			drawLoginInfo();
 			if (!login.isMinimized())
 				login.draw();
+			if (!createAccount.isMinimized())
+				createAccount.draw();
 		}
 	}
 
@@ -143,7 +156,7 @@ public class MainMenu {
 		this.isExited = isExited;
 	}
 
-	Boolean clicked = true;
+	Boolean clicked = true, clicked2 = true;
 
 	public void drawLoginInfo() {
 		String s1 = " Login Now", s2 = " | or | ", s3 = "Create Account ";
@@ -181,6 +194,15 @@ public class MainMenu {
 			textureLoader.textBoxTitle.drawString(Main.getWidth()
 					- textureLoader.metrics2.stringWidth(s3) - 3,
 					Main.getHeight() - 22, s3, Color.black);
+			if (Mouse.isButtonDown(0) && !clicked2) {
+				clicked2 = true;
+				if (!createAccount.getOpened()) {
+					createAccount.setOpened(true);
+				} else
+					createAccount.setOpened(false);
+			} else if (!Mouse.isButtonDown(0)) {
+				clicked2 = false;
+			}
 		} else {
 			textureLoader.textBoxTitle.drawString(Main.getWidth()
 					- textureLoader.metrics2.stringWidth(s3) - 3,
@@ -189,6 +211,7 @@ public class MainMenu {
 	}
 
 	public static Boolean overSubmenu() {
-		return login.isWithin();
+
+		return login.isWithin() || createAccount.isWithin();
 	}
 }
