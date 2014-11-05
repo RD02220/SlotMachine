@@ -64,15 +64,15 @@ public class SlotFacade {
 	 * to display three symbols.
 	 */
 	public void pullLever() {
-		System.out.println("Pulling lever...");
+		// System.out.println("Pulling lever...");
 		symbolDisplay[0] = reels[0].getRandomTriplet();
 		symbolDisplay[1] = reels[1].getRandomTriplet();
 		symbolDisplay[2] = reels[2].getRandomTriplet();
-		display();
-		if (checkWinner()) {
-			System.out.println();
-			numberOfWins++;
-		}
+		// display();
+		// if (checkWinner()) {
+		// System.out.println();
+		// numberOfWins++;
+		// }
 	}
 
 	/**

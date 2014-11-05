@@ -126,9 +126,9 @@ public class MainMenu {
 			}
 			box.draw();
 			drawLoginInfo();
-			if (!login.isMinimized())
+			if (login.getOpened())
 				login.draw();
-			if (!createAccount.isMinimized())
+			if (createAccount.getOpened())
 				createAccount.draw();
 		}
 	}
