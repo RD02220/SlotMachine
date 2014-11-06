@@ -168,11 +168,17 @@ public class MainMenu {
 					- textureLoader.metrics2.stringWidth(s1 + s2 + s3) - 3,
 					Main.getHeight() - 22, s1, Color.black);
 			if (Mouse.isButtonDown(0) && !clicked) {
-				clicked = true;
-				if (!login.getOpened()) {
-					login.setOpened(true);
-				} else
+				if (!MainMenu.overSubmenu()) {
+					clicked = true;
 					login.setOpened(false);
+					login = new SubMenu("Login", true, true, false, 0, 0);
+					login.addComponent(new MenuTextBoxV2("Username", false,
+							false, 35, 25));
+					login.addComponent(new MenuTextBoxV2("Password", false,
+							false, 35, 52));
+					login.addComponent(new Button("Login", 55, 80));
+					login.setOpened(true);
+				}
 			} else if (!Mouse.isButtonDown(0)) {
 				clicked = false;
 			}
@@ -195,10 +201,21 @@ public class MainMenu {
 					Main.getHeight() - 22, s3, Color.black);
 			if (Mouse.isButtonDown(0) && !clicked2) {
 				clicked2 = true;
-				if (!createAccount.getOpened()) {
+				if (!MainMenu.overSubmenu()) {
+					createAccount = new SubMenu("Create Account", true, true,
+							false, 0, 0);
+					createAccount.addComponent(new MenuTextBoxV2("Username",
+							false, false, 35, 25));
+					createAccount.addComponent(new MenuTextBoxV2("Password",
+							false, false, 35, 52));
+					createAccount.addComponent(new MenuTextBoxV2(
+							"Password Re-Entry", false, false, 35, 79));
+					createAccount.addComponent(new MenuTextBoxV2("Email",
+							false, false, 35, 106));
+					createAccount.addComponent(new Button("Create Account", 55,
+							134));
 					createAccount.setOpened(true);
-				} else
-					createAccount.setOpened(false);
+				}
 			} else if (!Mouse.isButtonDown(0)) {
 				clicked2 = false;
 			}

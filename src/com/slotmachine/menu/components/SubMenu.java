@@ -14,12 +14,15 @@ import com.slotmachine.menu.MainMenu;
 public class SubMenu implements Component {
 
 	public static int subMenusMinimized = -1;
+	public static int subMenuCount = 1;
 	int subMenuMinID = 0;
+	int subMenuID = 0;
 	String title = "";
 	Boolean centered = true, movable = true, minimized = false, opened = false;
 	int x = 0, y = 0;
 	int dragX = 0, dragY = 0;
 	ArrayList<Component> menuComponents = new ArrayList<Component>();
+	public static ArrayList<SubMenu> subMenus = new ArrayList<SubMenu>();
 
 	public SubMenu(String menuTitle, Boolean isCentered, Boolean isMovable,
 			Boolean startMinimized, int x, int y) {
@@ -27,6 +30,9 @@ public class SubMenu implements Component {
 		centered = isCentered;
 		movable = isMovable;
 		minimized = startMinimized;
+		subMenuCount++;
+		subMenuID = subMenuCount;
+		subMenus.add(this);
 	}
 
 	public Boolean isMinimized() {
@@ -45,7 +51,7 @@ public class SubMenu implements Component {
 			Images.drawImage(MainMenu.textureLoader.subMenu, x + dragX, y
 					+ dragY);
 			MainMenu.textureLoader.textBoxTitle.drawString(x + 7 + dragX, y + 2
-					+ dragY, title);
+					+ dragY, title + subMenuID);
 			String minimize = " _ ";
 			String maximize = "[]";
 			String close = " X ";
@@ -137,12 +143,27 @@ public class SubMenu implements Component {
 				if (Mouse.isButtonDown(0)
 						&& header.contains(new Point(Mouse.getX(), Main
 								.getHeight() - Mouse.getY())) && !clickedWithin) {
-					insideBox = true;
-					System.out.println("Clicked Within: " + x + " " + y + " "
-							+ lastX + " " + lastY + " " + dragX + " " + dragY);
-					clickedWithin = true;
-					lastX = Mouse.getX() - dragX;
-					lastY = (Main.getHeight() - Mouse.getY()) - dragY;
+					Boolean isOnTop = true;
+					for (SubMenu m : subMenus) {
+						Rectangle header2 = new Rectangle(m.x + m.dragX, m.y
+								+ m.dragY,
+								MainMenu.textureLoader.subMenu.getImageWidth(),
+								17);
+						if (header2.contains(new Point(Mouse.getX(), Main
+								.getHeight() - Mouse.getY()))) {
+							if (subMenuID < m.subMenuID)
+								isOnTop = false;
+						}
+					}
+					if (isOnTop) {
+						insideBox = true;
+						System.out.println("Clicked Within: " + x + " " + y
+								+ " " + lastX + " " + lastY + " " + dragX + " "
+								+ dragY);
+						clickedWithin = true;
+						lastX = Mouse.getX() - dragX;
+						lastY = (Main.getHeight() - Mouse.getY()) - dragY;
+					}
 				} else if (Mouse.isButtonDown(0) && clickedWithin) {
 					insideBox = true;
 					if (Mouse.getX() - lastX > 0
@@ -184,11 +205,10 @@ public class SubMenu implements Component {
 			int xTemp = x;
 			int yTemp = y;
 			x = MainMenu.textureLoader.subMenu.getImageWidth() * subMenuMinID;
+			System.out.println(title + " " + x + " " + y + " " + subMenuMinID);
 			y = Main.getHeight() - 20;
-			Images.drawImage(MainMenu.textureLoader.subMenu, x + dragX, y
-					+ dragY);
-			MainMenu.textureLoader.textBoxTitle.drawString(x + 7 + dragX, y + 2
-					+ dragY, title);
+			Images.drawImage(MainMenu.textureLoader.subMenu, x, y);
+			MainMenu.textureLoader.textBoxTitle.drawString(x + 8, y + 3, title);
 			String minimize = " _ ";
 			String maximize = "[]";
 			String close = " X ";
@@ -206,6 +226,11 @@ public class SubMenu implements Component {
 					System.out.println("Minimize Pressed");
 					clickedMinimize = true;
 					minimized = false;
+					for (SubMenu m : subMenus) {
+						if (m.subMenuMinID > subMenuMinID) {
+							m.subMenuMinID--;
+						}
+					}
 					subMenusMinimized--;
 					subMenuMinID = 0;
 				} else if (!Mouse.isButtonDown(0) && clickedMinimize) {
@@ -264,6 +289,17 @@ public class SubMenu implements Component {
 			x = xTemp;
 			y = yTemp;
 		}
+	}
+
+	public void unMinimized() {
+		subMenusMinimized--;
+		for (SubMenu m : subMenus) {
+			if (m.subMenuMinID > subMenuMinID) {
+				m.subMenuMinID--;
+			}
+		}
+		subMenuMinID = 0;
+
 	}
 
 	public void setOpened(Boolean open) {

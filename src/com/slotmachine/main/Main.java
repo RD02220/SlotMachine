@@ -27,6 +27,7 @@ public class Main {
 	// Client Variables
 	public static int WD, HT;
 	public static int currency = 100;
+	Boolean drawSubMenuInfo = false;
 
 	// Button Event Variables
 	Boolean isDown = false, isDown2 = false, ended = false;
@@ -62,10 +63,13 @@ public class Main {
 		gameloop();
 	}
 
+	Boolean fOnePressed = false;
+
 	public void gameloop() throws IOException {
 		while (!Display.isCloseRequested()) {
 			WD = Display.getWidth();
 			HT = Display.getHeight();
+
 			if (ended)
 				break;
 			switch (gameState) {
@@ -77,8 +81,17 @@ public class Main {
 				slot = new SlotMachineTemp();
 				gameState = GameState.MAINMENU;
 			case MAINMENU:
+				if (Keyboard.isKeyDown(Keyboard.KEY_F1) && !fOnePressed) {
+					System.out.println("Pressed");
+					fOnePressed = true;
+					drawSubMenuInfo = !drawSubMenuInfo;
+				} else if (!Keyboard.isKeyDown(Keyboard.KEY_F1) && fOnePressed) {
+					fOnePressed = false;
+				}
 				if (!m.getIsExited() && !o.isOnScreen() && !slot.isOnScreen()) {
 					m.drawMainMenu();
+					if (drawSubMenuInfo)
+						drawSubMenuInfo();
 					Display.update();
 					Display.sync(60);
 				}
@@ -86,6 +99,7 @@ public class Main {
 					Display.destroy();
 					System.exit(0);
 				}
+
 			case OPTIONSMENU:
 				if (o.isOnScreen()) {
 					o.drawMainMenu();
@@ -102,8 +116,14 @@ public class Main {
 				break;
 
 			}
+
 		}
 		Display.destroy();
+	}
+
+	private void drawSubMenuInfo() {
+
+		MainMenu.textureLoader.textBoxTitle.drawString(5, 5, "Test");
 	}
 
 	public static BufferedImage glScreenshot() {
