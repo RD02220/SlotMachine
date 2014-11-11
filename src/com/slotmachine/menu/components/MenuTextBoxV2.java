@@ -14,15 +14,16 @@ public class MenuTextBoxV2 implements Component {
 
 	private String toolTip = "", startText = "";
 	private int xPos = 0, yPos = 0;
-	private Boolean isFocused = false, clearOnClick = false;
+	private Boolean isFocused = false, clearOnClick = false, isPass = false;
 
 	public MenuTextBoxV2(String startingText, Boolean clearOnFirstClick,
-			Boolean isStarFocused, int x, int y) {
+			Boolean isStarFocused, int x, int y, Boolean IsPassword) {
 		startText = startingText;
 		xPos = x;
 		yPos = y;
 		isFocused = isStarFocused;
 		clearOnClick = clearOnFirstClick;
+		isPass = IsPassword;
 	}
 
 	long timeFlash, lastFlash;
@@ -37,6 +38,8 @@ public class MenuTextBoxV2 implements Component {
 	Long timeAdded;
 	long timeDeletePressed = 0;
 
+	Boolean neverClicked = true;
+
 	public void draw() {
 		timeFlash = System.currentTimeMillis();
 		if (first) {
@@ -45,9 +48,20 @@ public class MenuTextBoxV2 implements Component {
 		}
 		if (Mouse.isButtonDown(0)) {
 			if (isInTextBox(Mouse.getX(), Mouse.getY())) {
-				isFocused = true;
+				if (!SubMenu.anySubDragged) {
+					if (neverClicked) {
+						if (clearOnClick) {
+							startText = "";
+						}
+						neverClicked = false;
+					}
+					isFocused = true;
+				} else {
+					isFocused = false;
+				}
 			} else {
 				isFocused = false;
+
 			}
 		}
 		if (isFocused) {
@@ -143,8 +157,20 @@ public class MenuTextBoxV2 implements Component {
 
 		} else {
 			Images.drawImage(MainMenu.textureLoader.writeTextBox, xPos, yPos);
-			MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9, yPos + 3,
-					startText);
+			String replace = "";
+			for (int i = 0; i < startText.toCharArray().length; i++) {
+				replace = replace + "*";
+			}
+			if (!isPass)
+				MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+						yPos + 3, startText);
+			else if (isPass)
+				if (!neverClicked)
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, replace);
+				else if (neverClicked)
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, startText);
 		}
 
 	}

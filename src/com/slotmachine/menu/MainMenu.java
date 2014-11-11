@@ -30,17 +30,19 @@ public class MainMenu {
 
 		textureLoader = new MenuTextures();
 		login = new SubMenu("Login", true, true, false, 0, 0, 0);
-		login.addComponent(new MenuTextBoxV2("Username", false, false, 35, 25));
-		login.addComponent(new MenuTextBoxV2("Password", false, false, 35, 52));
+		login.addComponent(new MenuTextBoxV2("Username", false, false, 35, 25,
+				false));
+		login.addComponent(new MenuTextBoxV2("Password", true, false, 35, 52,
+				true));
 		login.addComponent(new Button("Login", 55, 80), true);
 		createAccount = new SubMenu("Create Account", true, true, false, 0, 0,
 				1);
 		createAccount.addComponent(new MenuTextBoxV2("Username", false, false,
-				35, 25));
-		createAccount.addComponent(new MenuTextBoxV2("Password", false, false,
-				35, 52));
-		createAccount.addComponent(new MenuTextBoxV2("Password Re-Entry",
-				false, false, 35, 79));
+				35, 25, false));
+		createAccount.addComponent(new MenuTextBoxV2("Password", true, false,
+				35, 52, true));
+		createAccount.addComponent(new MenuTextBoxV2("Password Re-Entry", true,
+				false, 35, 79, true));
 		// createAccount.addComponent(new MenuTextBoxV2("Email", false, false,
 		// 35,
 		// 106));
@@ -128,31 +130,41 @@ public class MainMenu {
 			}
 			box.draw();
 			drawLoginInfo();
-			if (login.getOpened())
-				login.draw();
-			if (login.isSubMenuSubmitted()) {
-				System.out.println(login.getUsername() + " "
-						+ login.getPassword());
-				// Main.dbAccess.verifyLogin(login.getUsername(),
-				// login.getPassword());
+			drawLogin();
+			drawCreate();
+		}
 
-				if (true) {
-					Main.username = login.getUsername();
-					Main.isLoggedIn = true;
-					// Main.currency = Main.dbAccess
-					// .getCurrencyForPlayer(Main.username);
-					login.setOpened(false);
-					createAccount.setOpened(false);
-				}
-			}
+	}
 
-			if (createAccount.getOpened())
-				createAccount.draw();
-			if (createAccount.isSubMenuSubmitted()) {
-				System.out.println(createAccount.getUsername() + " "
-						+ createAccount.getPassword() + " "
-						+ createAccount.getPasswordConfirm());
+	public void drawLogin() {
+		if (login.getOpened())
+			login.draw();
+		if (login.isSubMenuSubmitted()) {
+			System.out.println(login.getUsername() + " " + login.getPassword());
+			Boolean valid = Main.dbAccess.verifyLogin(login.getUsername(),
+					login.getPassword());
+
+			if (valid) {
+				System.out.println("Valid username and password");
+				Main.username = login.getUsername();
+				Main.isLoggedIn = true;
+				Main.currency = Main.dbAccess
+						.getCurrencyForPlayer(Main.username);
+				login.setOpened(false);
+				createAccount.setOpened(false);
+			} else {
+				System.out.println("Invalid username and password");
 			}
+		}
+	}
+
+	public void drawCreate() {
+		if (createAccount.getOpened())
+			createAccount.draw();
+		if (createAccount.isSubMenuSubmitted()) {
+			System.out.println(createAccount.getUsername() + " "
+					+ createAccount.getPassword() + " "
+					+ createAccount.getPasswordConfirm());
 		}
 	}
 
@@ -199,9 +211,9 @@ public class MainMenu {
 						login.setOpened(false);
 						login = new SubMenu("Login", true, true, false, 0, 0, 0);
 						login.addComponent(new MenuTextBoxV2("Username", false,
-								false, 35, 25));
-						login.addComponent(new MenuTextBoxV2("Password", false,
-								false, 35, 52));
+								false, 35, 25, false));
+						login.addComponent(new MenuTextBoxV2("Password", true,
+								false, 35, 52, true));
 						login.addComponent(new Button("Login", 55, 80), true);
 						login.setOpened(true);
 					}
@@ -233,11 +245,13 @@ public class MainMenu {
 						createAccount = new SubMenu("Create Account", true,
 								true, false, 0, 0, 1);
 						createAccount.addComponent(new MenuTextBoxV2(
-								"Username", false, false, 35, 25));
+								"Username", false, false, 35, 25, false));
 						createAccount.addComponent(new MenuTextBoxV2(
-								"Password", false, false, 35, 52));
-						createAccount.addComponent(new MenuTextBoxV2(
-								"Password Re-Entry", false, false, 35, 79));
+								"Password", true, false, 35, 52, true));
+						createAccount
+								.addComponent(new MenuTextBoxV2(
+										"Password Re-Entry", true, false, 35,
+										79, true));
 						// createAccount.addComponent(new MenuTextBoxV2("Email",
 						// false, false, 35, 106));
 						createAccount.addComponent(new Button("Create Account",

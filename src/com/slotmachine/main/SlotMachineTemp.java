@@ -98,6 +98,8 @@ public class SlotMachineTemp {
 				checkWin = player.checkWinner();
 				if (checkWin)
 					Main.currency = Main.currency + 3;
+				Main.dbAccess
+						.setCurrencyForPlayer(Main.username, Main.currency);
 
 			} else if (!lever.isActivated() && pulled) {
 				pulled = false;

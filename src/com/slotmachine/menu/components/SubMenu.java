@@ -26,6 +26,8 @@ public class SubMenu implements Component {
 	int targetButton;
 	int type = 0;
 
+	Boolean focused = false;
+
 	public SubMenu(String menuTitle, Boolean isCentered, Boolean isMovable,
 			Boolean startMinimized, int x, int y, int menuType) {
 		title = menuTitle;
@@ -49,9 +51,24 @@ public class SubMenu implements Component {
 
 	Boolean clickedMinimize = false, clickedMaximize = false,
 			clickedExit = false;
+	public static Boolean anySubDragged = false;
+
+	public void setFocused(Boolean set) {
+		focused = set;
+	}
 
 	public void draw() {
+		anySubDragged = clickedWithin;
 		if (!minimized) {
+			if (clickedWithin) {
+				if (!focused) {
+					for (SubMenu sm : subMenus) {
+						if (sm.focused)
+							sm.setFocused(false);
+					}
+					focused = true;
+				}
+			}
 			Images.drawImage(MainMenu.textureLoader.subMenu, x + dragX, y
 					+ dragY);
 			MainMenu.textureLoader.textBoxTitle.drawString(x + 7 + dragX, y + 2
@@ -159,7 +176,13 @@ public class SubMenu implements Component {
 								isOnTop = false;
 						}
 					}
-					if (isOnTop) {
+					Boolean anyDragged = false;
+					for (SubMenu sm : subMenus) {
+						if (sm.clickedWithin && sm.subMenuID != subMenuID) {
+							anyDragged = true;
+						}
+					}
+					if (isOnTop && !anyDragged) {
 						insideBox = true;
 						System.out.println("Clicked Within: " + x + " " + y
 								+ " " + lastX + " " + lastY + " " + dragX + " "
@@ -241,19 +264,19 @@ public class SubMenu implements Component {
 				}
 			} else {
 				MainMenu.textureLoader.textBoxTitle.drawString(x
-						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-						+ dragX, y + 2 + dragY, minimize);
+						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37,
+						y + 2, minimize);
 			}
 			r = new Rectangle(x
-					+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-					+ dragX + 13, y + 2 + dragY,
+					+ MainMenu.textureLoader.subMenu.getImageWidth() - 37 + 13,
+					y + 2,
 					MainMenu.textureLoader.metrics2.stringWidth(maximize),
 					MainMenu.textureLoader.metrics2.getHeight());
 			if (r.contains(new Point(Mouse.getX(), Main.getHeight()
 					- Mouse.getY()))) {
 				MainMenu.textureLoader.textBoxTitle.drawString(x
 						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-						+ dragX + 13, y + 2 + dragY, maximize, Color.black);
+						+ 13, y + 2, maximize, Color.black);
 				if (Mouse.isButtonDown(0) && !clickedMaximize) {
 					System.out.println("Maximize Pressed");
 					clickedMaximize = true;
@@ -266,18 +289,17 @@ public class SubMenu implements Component {
 			} else {
 				MainMenu.textureLoader.textBoxTitle.drawString(x
 						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-						+ dragX + 13, y + 2 + dragY, maximize);
+						+ 13, y + 2, maximize);
 			}
 			r = new Rectangle(x
-					+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-					+ dragX + 22, y + 2 + dragY,
-					MainMenu.textureLoader.metrics2.stringWidth(close),
+					+ MainMenu.textureLoader.subMenu.getImageWidth() - 37 + 22,
+					y + 2, MainMenu.textureLoader.metrics2.stringWidth(close),
 					MainMenu.textureLoader.metrics2.getHeight());
 			if (r.contains(new Point(Mouse.getX(), Main.getHeight()
 					- Mouse.getY()))) {
 				MainMenu.textureLoader.textBoxTitle.drawString(x
 						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-						+ dragX + 22, y + 2 + dragY, close, Color.black);
+						+ 22, y + 2, close, Color.black);
 				if (Mouse.isButtonDown(0) && !clickedExit) {
 					System.out.println("Close Pressed");
 					clickedExit = true;
@@ -287,7 +309,7 @@ public class SubMenu implements Component {
 			} else {
 				MainMenu.textureLoader.textBoxTitle.drawString(x
 						+ MainMenu.textureLoader.subMenu.getImageWidth() - 37
-						+ dragX + 22, y + 2 + dragY, close);
+						+ 22, y + 2, close);
 			}
 			x = xTemp;
 			y = yTemp;
@@ -370,7 +392,13 @@ public class SubMenu implements Component {
 	Boolean isSubmitted = false;
 
 	public Boolean isSubMenuSubmitted() {
-		if (opened && !minimized)
+		Boolean anyDragged = false;
+		for (SubMenu sm : subMenus) {
+			if (sm.clickedWithin) {
+				anyDragged = true;
+			}
+		}
+		if (opened && !minimized && !clickedWithin && !anyDragged)
 			for (Component c : menuComponents) {
 				try {
 					if (((Button) c).isActivated() && !isSubmitted) {
