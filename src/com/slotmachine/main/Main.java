@@ -20,6 +20,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
 
+import com.slotmachine.db.DatabaseAccess;
 import com.slotmachine.menu.MainMenu;
 import com.slotmachine.menu.OptionsMenu;
 
@@ -28,6 +29,9 @@ public class Main {
 	public static int WD, HT;
 	public static int currency = 100;
 	Boolean drawSubMenuInfo = false;
+	public static Boolean isLoggedIn = false;
+	public static String username = "";
+	public static DatabaseAccess dbAccess = new DatabaseAccess();
 
 	// Button Event Variables
 	Boolean isDown = false, isDown2 = false, ended = false;

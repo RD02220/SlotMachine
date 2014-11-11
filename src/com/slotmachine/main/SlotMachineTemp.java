@@ -87,6 +87,7 @@ public class SlotMachineTemp {
 						75);
 			lever.draw();
 			if (lever.isActivated() && !pulled) {
+				Main.currency--;
 				started = true;
 				pulled = true;
 				System.out.println("Pulling Lever");
@@ -95,6 +96,8 @@ public class SlotMachineTemp {
 				reel2.setLabel(player.getReelTwo());
 				reel3.setLabel(player.getReelThree());
 				checkWin = player.checkWinner();
+				if (checkWin)
+					Main.currency = Main.currency + 3;
 
 			} else if (!lever.isActivated() && pulled) {
 				pulled = false;
@@ -119,6 +122,7 @@ public class SlotMachineTemp {
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 90);
 			winner.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100);
+			currencyCounter.setLabel("Currency: " + Main.currency);
 			currencyCounter.draw();
 			reel1.draw();
 			reel2.draw();
@@ -131,7 +135,16 @@ public class SlotMachineTemp {
 					winner.draw();
 				}
 			}
+			drawLogin();
+		}
+	}
 
+	public void drawLogin() {
+		if (Main.isLoggedIn) {
+			MainMenu.textureLoader.textBoxTitle.drawString(2, 2,
+					"Welcome back " + Main.username);
+			MainMenu.textureLoader.textBoxTitle.drawString(2, 15,
+					"Current Currency: " + Main.currency);
 		}
 	}
 
@@ -167,4 +180,5 @@ public class SlotMachineTemp {
 	}
 
 	Boolean clicked = true, clicked2 = true;
+
 }

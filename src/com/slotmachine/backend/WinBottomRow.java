@@ -26,4 +26,5 @@ public class WinBottomRow extends WinBehavior {
 		}
 		return false;
 	}
+
 }

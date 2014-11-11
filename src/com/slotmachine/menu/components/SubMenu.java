@@ -23,16 +23,20 @@ public class SubMenu implements Component {
 	int dragX = 0, dragY = 0;
 	ArrayList<Component> menuComponents = new ArrayList<Component>();
 	public static ArrayList<SubMenu> subMenus = new ArrayList<SubMenu>();
+	int targetButton;
+	int type = 0;
 
 	public SubMenu(String menuTitle, Boolean isCentered, Boolean isMovable,
-			Boolean startMinimized, int x, int y) {
+			Boolean startMinimized, int x, int y, int menuType) {
 		title = menuTitle;
 		centered = isCentered;
 		movable = isMovable;
 		minimized = startMinimized;
 		subMenuCount++;
 		subMenuID = subMenuCount;
+		menuComponents = new ArrayList<Component>();
 		subMenus.add(this);
+		type = menuType;
 	}
 
 	public Boolean isMinimized() {
@@ -205,7 +209,6 @@ public class SubMenu implements Component {
 			int xTemp = x;
 			int yTemp = y;
 			x = MainMenu.textureLoader.subMenu.getImageWidth() * subMenuMinID;
-			System.out.println(title + " " + x + " " + y + " " + subMenuMinID);
 			y = Main.getHeight() - 20;
 			Images.drawImage(MainMenu.textureLoader.subMenu, x, y);
 			MainMenu.textureLoader.textBoxTitle.drawString(x + 8, y + 3, title);
@@ -344,6 +347,13 @@ public class SubMenu implements Component {
 		menuComponents.add(c);
 	}
 
+	public void addComponent(Component c, Boolean target) {
+		menuComponents.add(c);
+		if (target) {
+			targetButton = menuComponents.size() - 1;
+		}
+	}
+
 	public void removeComponent(Component c) {
 		menuComponents.remove(c);
 	}
@@ -355,5 +365,78 @@ public class SubMenu implements Component {
 		return header.contains(new Point(Mouse.getX(), Main.getHeight()
 				- Mouse.getY()))
 				|| insideBox;
+	}
+
+	Boolean isSubmitted = false;
+
+	public Boolean isSubMenuSubmitted() {
+		if (opened && !minimized)
+			for (Component c : menuComponents) {
+				try {
+					if (((Button) c).isActivated() && !isSubmitted) {
+						System.out.println(title + " submenu activated");
+						isSubmitted = true;
+						return true;
+					} else if (!((Button) c).isActivated() && isSubmitted) {
+						isSubmitted = false;
+					}
+				} catch (Exception e) {
+				}
+			}
+		return false;
+	}
+
+	public String getUsername() {
+		String username = "";
+		if (type == 0 || type == 1) {
+			if (menuComponents != null) {
+				if (menuComponents.get(0) != null) {
+					try {
+						username = ((MenuTextBoxV2) menuComponents.get(0))
+								.getSubmitted();
+					} catch (Exception e) {
+
+					}
+				}
+
+			}
+		}
+		return username;
+	}
+
+	public String getPassword() {
+		String username = "";
+		if (type == 0 || type == 1) {
+			if (menuComponents != null) {
+				if (menuComponents.get(1) != null) {
+					try {
+						username = ((MenuTextBoxV2) menuComponents.get(1))
+								.getSubmitted();
+					} catch (Exception e) {
+
+					}
+				}
+
+			}
+		}
+		return username;
+	}
+
+	public String getPasswordConfirm() {
+		String username = "";
+		if (type == 1) {
+			if (menuComponents != null) {
+				if (menuComponents.get(2) != null) {
+					try {
+						username = ((MenuTextBoxV2) menuComponents.get(2))
+								.getSubmitted();
+					} catch (Exception e) {
+
+					}
+				}
+
+			}
+		}
+		return username;
 	}
 }
