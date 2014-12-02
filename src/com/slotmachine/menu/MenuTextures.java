@@ -13,7 +13,7 @@ import org.newdawn.slick.util.ResourceLoader;
 public class MenuTextures {
 
 	public Texture background, logo, button, buttonHover, textBox,
-			writeTextBox, subMenu;
+			writeTextBox, subMenu, slotmachine;
 	public TrueTypeFont font, textBoxTitle;
 	public FontMetrics metrics, metrics2;
 
@@ -47,5 +47,7 @@ public class MenuTextures {
 				.getResourceAsStream("textures/Menus/Components/TextBox2.png"));
 		subMenu = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/Menus/Components/SubMenu.png"));
+		slotmachine = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachineSprite.png"));
 	}
 }

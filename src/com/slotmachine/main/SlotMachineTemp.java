@@ -1,11 +1,17 @@
 package com.slotmachine.main;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.opengl.TextureLoader;
 
+import com.slotmachine.api.Animation;
 import com.slotmachine.api.Images;
+import com.slotmachine.api.SpriteSheet;
 import com.slotmachine.backend.SlotFacade;
 import com.slotmachine.menu.MainMenu;
 import com.slotmachine.menu.components.Button;
@@ -19,16 +25,19 @@ public class SlotMachineTemp {
 	Button lever, mainMenu;
 	Label currencyCounter, reel1, reel2, reel3, winner;
 	Boolean started = false;
+	SpriteSheet a;
+	Animation b;
 
 	public SlotMachineTemp() throws IOException {
+
 		lever = new Button("Pull Lever", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2), 400);
 		mainMenu = new Button("Back to Main Menu", (Main.getWidth() / 2)
-				- (MainMenu.textureLoader.button.getImageWidth() / 2), 450);
+				- (MainMenu.textureLoader.button.getImageWidth() / 2), 500);
 		currencyCounter = new Label("Currency: " + Main.currency,
 				(Main.getWidth() / 2)
 						- (MainMenu.textureLoader.button.getImageWidth() / 2)
-						+ 90, 375);
+						+ 90, 470);
 		reel1 = new Label("", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110,
 				250);
@@ -41,11 +50,18 @@ public class SlotMachineTemp {
 		winner = new Label("WINNER!", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100,
 				320, Color.red);
+		a = new SpriteSheet("textures/SlotMachineSprite.png", 304, 344);
+
 	}
 
 	Boolean pulled = false, checkWin = false, mainMenuButton = false;
 
-	public void drawMainMenu() {
+	Boolean pressedLever = false;
+	Boolean leverActivated = false;
+	Boolean leverUp = false;
+	int leverFrame = 0;
+
+	public void drawMainMenu() throws IOException {
 		SlotFacade player = new SlotFacade();
 		if (isOnScreen) {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -64,29 +80,39 @@ public class SlotMachineTemp {
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			Color.white.bind();
 			drawBackground();
-			if (Main.getHeight() < 650) {
-				if ((Main.getHeight() - 650) + 75 > 0) {
-					Images.drawImage(
-							MainMenu.textureLoader.logo,
-							(Main.getWidth() / 2)
-									- (MainMenu.textureLoader.logo
-											.getImageWidth() / 2),
-							(Main.getHeight() - 650) + 75);
-				} else {
-					Images.drawImage(
-							MainMenu.textureLoader.logo,
-							(Main.getWidth() / 2)
-									- (MainMenu.textureLoader.logo
-											.getImageWidth() / 2), 1);
-				}
-			} else
-				Images.drawImage(
-						MainMenu.textureLoader.logo,
-						(Main.getWidth() / 2)
-								- (MainMenu.textureLoader.logo.getImageWidth() / 2),
-						75);
-			lever.draw();
-			if (lever.isActivated() && !pulled) {
+			Images.drawImage(MainMenu.textureLoader.logo, (Main.getWidth() / 2)
+					- (MainMenu.textureLoader.logo.getImageWidth() / 2), 30);
+			/*
+			 * lever.draw(); if (lever.isActivated() && !pulled) {
+			 * Main.currency--; started = true; pulled = true;
+			 * System.out.println("Pulling Lever"); player.pullLever();
+			 * reel1.setLabel(player.getReelOne());
+			 * reel2.setLabel(player.getReelTwo());
+			 * reel3.setLabel(player.getReelThree()); checkWin =
+			 * player.checkWinner(); if (checkWin) Main.currency = Main.currency
+			 * + 3; if (Main.isLoggedIn)
+			 * Main.dbAccess.setCurrencyForPlayer(Main.username, Main.currency);
+			 * 
+			 * } else if (!lever.isActivated() && pulled) { pulled = false; }
+			 */
+			if (mainMenu.isActivated() && !mainMenuButton) {
+				isOnScreen = false;
+				Main.m.setOnScreen(true);
+				Main.setState(GameState.MAINMENU);
+
+			} else if (!mainMenu.isActivated() && mainMenuButton) {
+				mainMenuButton = false;
+			}
+			Rectangle handle = new Rectangle((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
+					+ 10 + 295, 160 + 140, 25, 50);
+			Boolean drawn = false;
+			if (Mouse.isButtonDown(0)
+					&& handle.contains(new Point(Mouse.getX(), Mouse.getY()))
+					&& !leverActivated) {
+
+				drawn = true;
+				leverActivated = true;
 				Main.currency--;
 				started = true;
 				pulled = true;
@@ -98,20 +124,36 @@ public class SlotMachineTemp {
 				checkWin = player.checkWinner();
 				if (checkWin)
 					Main.currency = Main.currency + 3;
-				Main.dbAccess
-						.setCurrencyForPlayer(Main.username, Main.currency);
-
-			} else if (!lever.isActivated() && pulled) {
+				if (Main.isLoggedIn)
+					Main.dbAccess.setCurrencyForPlayer(Main.username,
+							Main.currency);
+			} else if (!Mouse.isButtonDown(0) && leverActivated) {
+				if (leverFrame > 10) {
+					leverActivated = false;
+					pulled = false;
+				}
+			}
+			if (leverActivated && leverFrame < 11) {
+				drawn = true;
+				Images.drawImage(
+					TextureLoader.getTexture("PNG",
+					a.getSprite(0, leverFrame)),
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.slotmachine
+										.getImageWidth() / 2) + 10, 160);
+				leverFrame++;
+			} else if (leverActivated && leverFrame > 10) {
+				leverFrame = 0;
+				leverActivated = false;
+				drawn = false;
 				pulled = false;
 			}
-			if (mainMenu.isActivated() && !mainMenuButton) {
-				isOnScreen = false;
-				Main.m.setOnScreen(true);
-				Main.setState(GameState.MAINMENU);
-
-			} else if (!mainMenu.isActivated() && mainMenuButton) {
-				mainMenuButton = false;
-			}
+			if (!drawn)
+				Images.drawImage(
+						MainMenu.textureLoader.slotmachine,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.slotmachine
+										.getImageWidth() / 2) + 10, 160);
 			reel1.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
 			reel2.setX((Main.getWidth() / 2)

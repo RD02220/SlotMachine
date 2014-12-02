@@ -50,8 +50,7 @@ public class MainMenu {
 		start = new MenuButton("Start Playing", 0);
 		options = new MenuButton("Options", 1);
 		aboutus = new MenuButton("About Us", 2);
-		users = new MenuButton("Users", 3);
-		exit = new MenuButton("Exit", 4);
+		exit = new MenuButton("Exit", 3);
 		box = new TextBox("Merlin's Ghost", "Lets play some slots!",
 				(Main.getWidth() / 2) + 15, 225);
 	}
@@ -106,7 +105,6 @@ public class MainMenu {
 			start.draw();
 			options.draw();
 			aboutus.draw();
-			users.draw();
 			exit.draw();
 			if (start.isHovered()) {
 				box.setTitle("Start");
@@ -121,10 +119,7 @@ public class MainMenu {
 			} else if (aboutus.isHovered()) {
 				box.setTitle("About Us");
 				box.setBodyText("Matt Stratton/nRyan DeBerardino/nO'Neal Jones/nChad Golden");
-			} else if (users.isHovered()) {
-				box.setTitle("Users");
-				box.setBodyText("View Users and Highscores!");
-			} else if (exit.isHovered()) {
+			}  else if (exit.isHovered()) {
 				box.setTitle("Exit Merlin's Ghost?");
 				box.setBodyText("Exit the game? (But why would you want too?)");
 			}

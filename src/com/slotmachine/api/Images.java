@@ -26,7 +26,6 @@ public class Images {
 		GL11.glLoadIdentity();
 		GL11.glOrtho(0, Main.getWidth(), Main.getHeight(), 0, 1, -1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		Color.white.bind();
 		t.bind();
 
 		GL11.glBegin(GL11.GL_QUADS);
@@ -57,7 +56,6 @@ public class Images {
 		GL11.glLoadIdentity();
 		GL11.glOrtho(0, Main.getWidth(), Main.getHeight(), 0, 1, -1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		Color.white.bind();
 		t.bind();
 
 		GL11.glBegin(GL11.GL_QUADS);

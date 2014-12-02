@@ -39,7 +39,7 @@ public class DatabaseAccess {
 			dbConnection = DriverManager.getConnection(connectionString,
 					"chadgold_team", "csci5335");
 
-			// System.out.println("Successfully connected to database.");
+			 System.out.println("Successfully connected to database.");
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		} catch (ClassNotFoundException e) {
@@ -96,6 +96,7 @@ public class DatabaseAccess {
 	public void setCurrencyForPlayer(String playerName, int currencyForPlayer) {
 		try {
 			initialize();
+			System.out.println("Got through initializing");
 			statement = dbConnection.createStatement();
 			statement.executeUpdate("UPDATE player SET currency = "
 					+ currencyForPlayer + " WHERE username = '" + playerName
@@ -214,10 +215,7 @@ public class DatabaseAccess {
 
 	public static void main(String[] args) {
 		DatabaseAccess dbAccess = new DatabaseAccess();
-		// System.out.println(dbAccess.getCurrencyForPlayer("cha"));
-		// dbAccess.registerPlayer("testjdbc1", "password");
-		// dbAccess.setCurrencyForPlayer("oneal", 1000);
-		// dbAccess.registerPlayer("Ryan", "password");;
+		 //System.out.println(dbAccess.getCurrencyForPlayer("cha"));
 		System.out.println("Database login test:\n---------------------");
 		while (true) {
 			java.util.Scanner scanner = new java.util.Scanner(System.in);
