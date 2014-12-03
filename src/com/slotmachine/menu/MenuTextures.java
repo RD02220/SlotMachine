@@ -48,6 +48,6 @@ public class MenuTextures {
 		subMenu = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/Menus/Components/SubMenu.png"));
 		slotmachine = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachineSprite.png"));
+				.getResourceAsStream("textures/SlotMachine/SlotMachine1.png"));
 	}
 }
