@@ -86,6 +86,7 @@ public class SubMenu implements Component {
 							} else {
 								if (!((MenuTextBoxV2) c).isFocused()) {
 									((MenuTextBoxV2) c).setFocused(true);
+
 									break a;
 								}
 							}

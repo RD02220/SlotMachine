@@ -6,7 +6,7 @@ import com.slotmachine.main.Main;
 import com.slotmachine.menu.MainMenu;
 import com.slotmachine.menu.OptionsMenu;
 
-public class Sound {
+public class Sound implements Command {
 
 	public static void playSound(int id) {
 		Float[] floats = new Float[10];
@@ -36,5 +36,9 @@ public class Sound {
 			}
 			SoundStore.get().poll(0);
 		}
+	}
+
+	public void execute(int id) {
+		playSound(id);
 	}
 }

@@ -94,7 +94,6 @@ public class SlotMachineTemp {
 		winner = new Label("WINNER!", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100,
 				320, Color.red);
-		a = new SpriteSheet("textures/SlotMachine/SlotMachine1.png", 304, 344);
 
 	}
 
@@ -630,6 +629,9 @@ public class SlotMachineTemp {
 		Images.drawImage(MainMenu.textureLoader.coin2, (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2) - 200,
 				390);
+		int temp = Main.currency;
+		if (Main.currency > 200)
+			Main.currency = 200;
 		for (int i = 0; i < Main.currency / 3; i = i + 5) {
 			Images.drawImage(
 					MainMenu.textureLoader.coin5,
@@ -672,6 +674,7 @@ public class SlotMachineTemp {
 							- (MainMenu.textureLoader.button.getImageWidth() / 2)
 							- 140, 400 - (i * 2));
 		}
+		Main.currency = temp;
 	}
 
 	public void drawLogin() {

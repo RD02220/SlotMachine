@@ -69,4 +69,5 @@ public class Images {
 		GL11.glVertex2f(x, y + height);
 		GL11.glEnd();
 	}
+
 }

@@ -131,7 +131,8 @@ public class MainMenu {
 				box.setBodyText("Edit your individual video, memory, sound and \nother options here!");
 			} else if (aboutus.isHovered()) {
 				box.setTitle("About Us");
-				box.setBodyText("Matt Stratton/nRyan DeBerardino/nO'Neal Jones/nChad Golden");
+				box.setBodyText("Ryan DeBerardino: Design and LWJGL /nProgramming/n/nO'Neal Jones: Analysis and Black/White Box /ntesting/n/n"
+						+ "Chad Golden: Team leader, completed /nslotmachine logic backend/n/nMatt Stratton: Created sprites and helped with /nBlack/White Box testing/n");
 			} else if (exit.isHovered()) {
 				box.setTitle("Exit Merlin's Ghost?");
 				box.setBodyText("Exit the game? (But why would you want too?)");
