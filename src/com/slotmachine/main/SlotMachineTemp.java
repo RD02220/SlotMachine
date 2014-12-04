@@ -26,56 +26,45 @@ public class SlotMachineTemp {
 	Boolean isExited = false, isOnScreen = false, pressedSingle = false;
 
 	Button lever, mainMenu;
-	Label currencyCounter, reel1, reel2, reel3, winner;
+	Label currencyCounter, reel1, reel2, reel3, winner, bettingCoins;
 	Boolean started = false;
 	SpriteSheet a;
 
+	int betting = 1;
 	ArrayList<Texture> slotMachine = new ArrayList<Texture>();
 	ArrayList<Texture> candlesGlow = new ArrayList<Texture>();
 	Texture slotAdd;
 
+	ArrayList<Texture> tiles = new ArrayList<Texture>();
+	Texture tileAdd;
+
 	public SlotMachineTemp() throws IOException {
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine1.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine2.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine3.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine4.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine5.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine6.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine7.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine8.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine9.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine10.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine11.png"));
-		slotMachine.add(slotAdd);
-		slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/SlotMachine/SlotMachine12.png"));
-		slotMachine.add(slotAdd);
+		int i = 1;
+		while (i < 9) {
+			tileAdd = TextureLoader.getTexture(
+					"PNG",
+					ResourceLoader.getResourceAsStream("textures/Tiles/Tile"
+							+ i + ".png"));
+			tiles.add(tileAdd);
+			i++;
+		}
+		i = 1;
+		while (i < 12) {
+			slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
+					.getResourceAsStream("textures/SlotMachine/SlotMachine" + i
+							+ ".png"));
+			slotMachine.add(slotAdd);
+			i++;
+		}
 		lever = new Button("Pull Lever", (Main.getWidth() / 2)
 				- (MainMenu.textureLoader.button.getImageWidth() / 2), 400);
 		mainMenu = new Button("Back to Main Menu", (Main.getWidth() / 2)
-				- (MainMenu.textureLoader.button.getImageWidth() / 2), 500);
+				- (MainMenu.textureLoader.button.getImageWidth() / 2), 480);
 		currencyCounter = new Label("Currency: " + Main.currency,
+				(Main.getWidth() / 2)
+						- (MainMenu.textureLoader.button.getImageWidth() / 2)
+						+ 90, 470);
+		bettingCoins = new Label("Betting: " + betting + " coins",
 				(Main.getWidth() / 2)
 						- (MainMenu.textureLoader.button.getImageWidth() / 2)
 						+ 90, 470);
@@ -102,7 +91,9 @@ public class SlotMachineTemp {
 	Boolean down = false;
 	int leverFrame = 0;
 
-	public void drawMainMenu() throws IOException {
+	int slotX = 0, slotY = 0;
+
+	public void drawSlot() throws IOException {
 		SlotFacade player = new SlotFacade();
 		if (isOnScreen) {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -136,6 +127,10 @@ public class SlotMachineTemp {
 			 * 
 			 * } else if (!lever.isActivated() && pulled) { pulled = false; }
 			 */
+			slotX = (Main.getWidth() / 2)
+					- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
+					+ 10;
+			slotY = 160;
 			if (mainMenu.isActivated() && !mainMenuButton) {
 				isOnScreen = false;
 				Main.m.setOnScreen(true);
@@ -146,7 +141,7 @@ public class SlotMachineTemp {
 			}
 			Rectangle handle = new Rectangle((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
-					+ 10 + 295, 160 + 140, 25, 50);
+					+ 10 + 295, (Main.getHeight() - 160 - 50 - 93), 25, 50);
 			Boolean drawn = false;
 			if (Mouse.isButtonDown(0)
 					&& handle.contains(new Point(Mouse.getX(), Mouse.getY()))
@@ -160,9 +155,9 @@ public class SlotMachineTemp {
 				pulled = true;
 				System.out.println("Pulling Lever");
 				player.pullLever();
-				reel1.setLabel(player.getReelOne());
-				reel2.setLabel(player.getReelTwo());
-				reel3.setLabel(player.getReelThree());
+				reel1.setLabel(player.getReelOne().trim());
+				reel2.setLabel(player.getReelTwo().trim());
+				reel3.setLabel(player.getReelThree().trim());
 				checkWin = player.checkWinner();
 				if (checkWin)
 					Main.currency = Main.currency + 3;
@@ -177,6 +172,10 @@ public class SlotMachineTemp {
 			}
 			if (leverActivated && leverFrame < 11 && down) {
 				drawn = true;
+				slotX = (Main.getWidth() / 2)
+						- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
+						+ 10;
+				slotY = 160;
 				Images.drawImage(
 						slotMachine.get(leverFrame),
 						(Main.getWidth() / 2)
@@ -189,8 +188,12 @@ public class SlotMachineTemp {
 			}
 			if (leverActivated && !down && leverFrame < 11) {
 				drawn = true;
+				slotX = (Main.getWidth() / 2)
+						- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
+						+ 10;
+				slotY = 160;
 				Images.drawImage(
-						slotMachine.get(11 - leverFrame),
+						slotMachine.get(10 - leverFrame),
 						(Main.getWidth() / 2)
 								- (MainMenu.textureLoader.slotmachine
 										.getImageWidth() / 2) + 10, 160);
@@ -203,12 +206,40 @@ public class SlotMachineTemp {
 				leverFrame = 0;
 
 			}
-			if (!drawn)
+			if (!drawn) {
+				slotX = (Main.getWidth() / 2)
+						- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
+						+ 10;
+				slotY = 160;
 				Images.drawImage(
 						MainMenu.textureLoader.slotmachine,
 						(Main.getWidth() / 2)
 								- (MainMenu.textureLoader.slotmachine
 										.getImageWidth() / 2) + 10, 160);
+			}
+			bettingCoins
+					.setX((Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 320);
+			bettingCoins.setY(250);
+			if (betting == 0)
+				betting = 1;
+			if (betting == 1)
+				bettingCoins.setLabel("Betting: " + betting + " coin");
+			else
+				bettingCoins.setLabel("Betting: " + betting + " coins");
+			Images.drawImage(
+					MainMenu.textureLoader.up,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 401, 235);
+			Images.drawImage(
+					MainMenu.textureLoader.down,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 401, 258);
+			bettingCoins.draw();
+
 			reel1.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
 			reel2.setX((Main.getWidth() / 2)
@@ -217,15 +248,14 @@ public class SlotMachineTemp {
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
 			lever.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2));
-			currencyCounter.setX((Main.getWidth() / 2)
-					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 90);
-			winner.setX((Main.getWidth() / 2)
-					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 100);
+
+			currencyCounter.setX(15);
+			currencyCounter.setY(Main.getHeight() - 20);
+			winner.setX(15);
+			winner.setY(Main.getHeight() - 40);
 			currencyCounter.setLabel("Currency: " + Main.currency);
 			currencyCounter.draw();
-			reel1.draw();
-			reel2.draw();
-			reel3.draw();
+			drawTiles();
 			mainMenu.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2));
 			mainMenu.draw();
@@ -235,6 +265,56 @@ public class SlotMachineTemp {
 				}
 			}
 			drawLogin();
+		}
+	}
+
+	public void drawTiles() {
+		String line1 = reel1.getLabelText();
+		String[] line1Split = line1.split(" ");
+		String line2 = reel2.getLabelText();
+		String[] line2Split = line2.split(" ");
+		String line3 = reel3.getLabelText();
+		String[] line3Split = line3.split(" ");
+		for (int i = 0; i < 3; i++) {
+			for (int t = 0; t < 3; t++) {
+				int prev = slotX;
+				if (t == 1) {
+					prev = slotX + 4;
+				}
+				if (t == 2) {
+					prev = slotX + 4 + 4;
+				}
+				String[] lineToUse = null;
+				if (i == 0) {
+					lineToUse = line1Split;
+				} else if (i == 1) {
+					lineToUse = line2Split;
+				} else if (i == 2) {
+					lineToUse = line3Split;
+				}
+				if (!line1.isEmpty()) {
+					if (lineToUse != null) {
+						Texture tileToDraw = tiles.get(0);
+						if (lineToUse[t].equals("A")) {
+							tileToDraw = tiles.get(1);
+						} else if (lineToUse[t].equals("B")) {
+							tileToDraw = tiles.get(2);
+						} else if (lineToUse[t].equals("C")) {
+							tileToDraw = tiles.get(3);
+						} else if (lineToUse[t].equals("D")) {
+							tileToDraw = tiles.get(4);
+						} else if (lineToUse[t].equals("E")) {
+							tileToDraw = tiles.get(5);
+						}
+
+						Images.drawImage(tileToDraw, (prev + 31)
+								+ ((t * tiles.get(0).getImageWidth())),
+								(slotY + 44)
+										+ (i * tiles.get(0).getImageHeight())
+										- (i * 2));
+					}
+				}
+			}
 		}
 	}
 

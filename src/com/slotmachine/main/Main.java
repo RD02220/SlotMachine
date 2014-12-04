@@ -112,7 +112,7 @@ public class Main {
 				}
 			case SLOTMACHINE:
 				if (slot.isOnScreen()) {
-					slot.drawMainMenu();
+					slot.drawSlot();
 					Display.update();
 					Display.sync(60);
 				}

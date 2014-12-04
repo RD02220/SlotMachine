@@ -23,6 +23,10 @@ public class Label implements Component {
 		color = c;
 	}
 
+	public String getLabelText() {
+		return label;
+	}
+
 	@Override
 	public String getToolTip() {
 		return null;
