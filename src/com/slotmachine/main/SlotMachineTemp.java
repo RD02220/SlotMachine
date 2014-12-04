@@ -388,47 +388,14 @@ public class SlotMachineTemp {
 						if (isAnimating) {
 							if (((System.currentTimeMillis() - startedAnimating)) > 1000) {
 
-								Boolean stop = false;
-								int incr = 1;
-								for (Integer aq : orderToStop) {
-									if (incr < stopped
-											&& ((System.currentTimeMillis() - lastStop)) > 50) {
-										if (total == aq)
-											stop = true;
-									}
-									incr++;
-								}
-								if (!stop) {
-									Images.drawImage(tiles.get(new Random()
-											.nextInt(8)), (prev + 31)
-											+ ((t * tiles.get(0)
-													.getImageWidth())),
-											(slotY + 44)
-													+ (i * tiles.get(0)
-															.getImageHeight())
-													- (i * 2));
-								} else {
-									Texture tileToDraw = tiles.get(0);
-									if (lineToUse[t].equals("A")) {
-										tileToDraw = tiles.get(1);
-									} else if (lineToUse[t].equals("B")) {
-										tileToDraw = tiles.get(2);
-									} else if (lineToUse[t].equals("C")) {
-										tileToDraw = tiles.get(3);
-									} else if (lineToUse[t].equals("D")) {
-										tileToDraw = tiles.get(4);
-									} else if (lineToUse[t].equals("E")) {
-										tileToDraw = tiles.get(5);
-									}
+								Images.drawImage(tiles.get(new Random()
+										.nextInt(8)), (prev + 31)
+										+ ((t * tiles.get(0).getImageWidth())),
+										(slotY + 44)
+												+ (i * tiles.get(0)
+														.getImageHeight())
+												- (i * 2));
 
-									Images.drawImage(tileToDraw, (prev + 31)
-											+ ((t * tiles.get(0)
-													.getImageWidth())),
-											(slotY + 44)
-													+ (i * tiles.get(0)
-															.getImageHeight())
-													- (i * 2));
-								}
 								lastStop = System.currentTimeMillis();
 								stopped++;
 							} else {
