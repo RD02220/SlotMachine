@@ -9,11 +9,13 @@ import java.util.Random;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 import com.slotmachine.api.Images;
+import com.slotmachine.api.Sound;
 import com.slotmachine.api.SpriteSheet;
 import com.slotmachine.backend.SlotFacade;
 import com.slotmachine.menu.MainMenu;
@@ -172,6 +174,7 @@ public class SlotMachineTemp {
 					}
 					orderToStop.add(ran);
 				}
+				Sound.playSound(1);
 				drawn = true;
 				leverActivated = true;
 				Main.currency = Main.currency - betting;
@@ -184,11 +187,7 @@ public class SlotMachineTemp {
 				reel2.setLabel(player.getReelTwo().trim());
 				reel3.setLabel(player.getReelThree().trim());
 				checkWin = player.checkWinner();
-				if (checkWin)
-					Main.currency = Main.currency + (betting * 3);
-				if (Main.isLoggedIn)
-					Main.dbAccess.setCurrencyForPlayer(Main.username,
-							Main.currency);
+
 			} else if (!Mouse.isButtonDown(0) && leverActivated && down) {
 				if (leverFrame > 10) {
 					down = false;
@@ -231,6 +230,7 @@ public class SlotMachineTemp {
 				leverFrame = 0;
 
 			}
+			SoundStore.get().poll(0);
 			if (!drawn) {
 				slotX = (Main.getWidth() / 2)
 						- (MainMenu.textureLoader.slotmachine.getImageWidth() / 2)
@@ -251,7 +251,9 @@ public class SlotMachineTemp {
 							(Main.getHeight() - Mouse.getY()))) && !upPressed) {
 				System.out.println("Pressed Up");
 				upPressed = true;
+
 				if (betting < 5) {
+					Sound.playSound(0);
 					betting++;
 				}
 			}
@@ -273,6 +275,7 @@ public class SlotMachineTemp {
 				System.out.println("Pressed Down");
 				downPressed = true;
 				if (betting > 1) {
+					Sound.playSound(0);
 					betting--;
 				}
 			}
@@ -351,7 +354,7 @@ public class SlotMachineTemp {
 			drawMoney();
 			if (started) {
 				if (checkWin) {
-					winner.draw();
+					// draw();
 				}
 			}
 			drawLogin();
@@ -449,6 +452,7 @@ public class SlotMachineTemp {
 
 	int stopped = 1;
 	long lastStop = 0;
+	long stoppedAt = 0;
 
 	public void drawTiles() {
 		String line1 = reel1.getLabelText();
@@ -476,18 +480,43 @@ public class SlotMachineTemp {
 				} else if (i == 2) {
 					lineToUse = line3Split;
 				}
+				if ((System.currentTimeMillis() - stoppedAt) < 1500) {
+					if (checkWin) {
+
+					} else {
+						Images.drawImage(tiles.get(5), (prev + 31)
+								+ ((t * tiles.get(0).getImageWidth())),
+								(slotY + 44)
+										+ (i * tiles.get(0).getImageHeight())
+										- (i * 2));
+					}
+
+				} else {
+					Images.drawImage(tiles.get(5), (prev + 31)
+							+ ((t * tiles.get(0).getImageWidth())),
+							(slotY + 44) + (i * tiles.get(0).getImageHeight())
+									- (i * 2));
+				}
 				if (!line1.isEmpty()) {
 					if (lineToUse != null) {
 						if (isAnimating
 								&& ((System.currentTimeMillis() - startedAnimating)) > 1800) {
 							isAnimating = false;
 							stopped = 1;
+							stoppedAt = System.currentTimeMillis();
 							f = 1;
+							if (checkWin) {
+								Sound.playSound(2);
+								Main.currency = Main.currency + (betting * 3);
+							}
+							if (Main.isLoggedIn)
+								Main.dbAccess.setCurrencyForPlayer(
+										Main.username, Main.currency);
 						}
 						if (isAnimating) {
 							if (((System.currentTimeMillis() - startedAnimating)) < 600) {
 								Images.drawImage(tiles.get(new Random()
-										.nextInt(8)), (prev + 31)
+										.nextInt(5)), (prev + 31)
 										+ ((t * tiles.get(0).getImageWidth())),
 										(slotY + 44)
 												+ (i * tiles.get(0)
@@ -498,17 +527,16 @@ public class SlotMachineTemp {
 								if (t == 0) {
 									Texture tileToDraw = tiles.get(0);
 									if (lineToUse[t].equals("A")) {
-										tileToDraw = tiles.get(1);
+										tileToDraw = tiles.get(0);
 									} else if (lineToUse[t].equals("B")) {
-										tileToDraw = tiles.get(2);
+										tileToDraw = tiles.get(1);
 									} else if (lineToUse[t].equals("C")) {
-										tileToDraw = tiles.get(3);
+										tileToDraw = tiles.get(2);
 									} else if (lineToUse[t].equals("D")) {
-										tileToDraw = tiles.get(4);
+										tileToDraw = tiles.get(3);
 									} else if (lineToUse[t].equals("E")) {
-										tileToDraw = tiles.get(5);
+										tileToDraw = tiles.get(4);
 									}
-
 									Images.drawImage(tileToDraw, (prev + 31)
 											+ ((t * tiles.get(0)
 													.getImageWidth())),
@@ -518,7 +546,7 @@ public class SlotMachineTemp {
 													- (i * 2));
 								} else {
 									Images.drawImage(tiles.get(new Random()
-											.nextInt(8)), (prev + 31)
+											.nextInt(5)), (prev + 31)
 											+ ((t * tiles.get(0)
 													.getImageWidth())),
 											(slotY + 44)
@@ -530,17 +558,16 @@ public class SlotMachineTemp {
 								if (t == 1 || t == 0) {
 									Texture tileToDraw = tiles.get(0);
 									if (lineToUse[t].equals("A")) {
-										tileToDraw = tiles.get(1);
+										tileToDraw = tiles.get(0);
 									} else if (lineToUse[t].equals("B")) {
-										tileToDraw = tiles.get(2);
+										tileToDraw = tiles.get(1);
 									} else if (lineToUse[t].equals("C")) {
-										tileToDraw = tiles.get(3);
+										tileToDraw = tiles.get(2);
 									} else if (lineToUse[t].equals("D")) {
-										tileToDraw = tiles.get(4);
+										tileToDraw = tiles.get(3);
 									} else if (lineToUse[t].equals("E")) {
-										tileToDraw = tiles.get(5);
+										tileToDraw = tiles.get(4);
 									}
-
 									Images.drawImage(tileToDraw, (prev + 31)
 											+ ((t * tiles.get(0)
 													.getImageWidth())),
@@ -550,7 +577,7 @@ public class SlotMachineTemp {
 													- (i * 2));
 								} else {
 									Images.drawImage(tiles.get(new Random()
-											.nextInt(8)), (prev + 31)
+											.nextInt(5)), (prev + 31)
 											+ ((t * tiles.get(0)
 													.getImageWidth())),
 											(slotY + 44)
@@ -562,17 +589,16 @@ public class SlotMachineTemp {
 						} else if (!isAnimating) {
 							Texture tileToDraw = tiles.get(0);
 							if (lineToUse[t].equals("A")) {
-								tileToDraw = tiles.get(1);
+								tileToDraw = tiles.get(0);
 							} else if (lineToUse[t].equals("B")) {
-								tileToDraw = tiles.get(2);
+								tileToDraw = tiles.get(1);
 							} else if (lineToUse[t].equals("C")) {
-								tileToDraw = tiles.get(3);
+								tileToDraw = tiles.get(2);
 							} else if (lineToUse[t].equals("D")) {
-								tileToDraw = tiles.get(4);
+								tileToDraw = tiles.get(3);
 							} else if (lineToUse[t].equals("E")) {
-								tileToDraw = tiles.get(5);
+								tileToDraw = tiles.get(4);
 							}
-
 							Images.drawImage(tileToDraw, (prev + 31)
 									+ ((t * tiles.get(0).getImageWidth())),
 									(slotY + 44)

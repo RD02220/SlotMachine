@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.openal.Audio;
+import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
@@ -18,6 +20,7 @@ public class MenuTextures {
 			sideCandle2;
 	public TrueTypeFont font, textBoxTitle;
 	public FontMetrics metrics, metrics2;
+	public Audio changeBet, pullLever, spinning, meadow;
 
 	public MenuTextures() throws IOException {
 		Font awtFont = new Font("Tahoma", Font.BOLD, 15);
@@ -71,5 +74,16 @@ public class MenuTextures {
 				.getResourceAsStream("textures/Candles/SideCandles.png"));
 		sideCandle2 = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/Candles/SideCandles2.png"));
+		changeBet = AudioLoader.getAudio("WAV", ResourceLoader
+				.getResourceAsStream("textures/SoundEffects/playerBet.wav"));
+		pullLever = AudioLoader.getAudio("WAV", ResourceLoader
+				.getResourceAsStream("textures/SoundEffects/pullLever.wav"));
+		spinning = AudioLoader.getAudio("WAV", ResourceLoader
+				.getResourceAsStream("textures/SoundEffects/winner.wav"));
+		meadow = AudioLoader
+				.getAudio(
+						"WAV",
+						ResourceLoader
+								.getResourceAsStream("textures/SoundEffects/MeadowOfThePast.wav"));
 	}
 }

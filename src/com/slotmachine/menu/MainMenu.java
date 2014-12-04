@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
@@ -55,7 +56,12 @@ public class MainMenu {
 				(Main.getWidth() / 2) + 15, 225);
 	}
 
+	public static Boolean clickedOptions = false;
+	public static long lastOptioned = 0;
+
 	public void drawMainMenu() {
+		if (lastOptioned == 0)
+			lastOptioned = System.currentTimeMillis();
 		if (isOnScreen) {
 			if (start.isActivated()) {
 				System.out.println("Start " + isOnScreen);
@@ -64,14 +70,17 @@ public class MainMenu {
 				Main.slot.setOnScreen(true);
 				Main.setState(GameState.SLOTMACHINE);
 			} else if (options.isActivated()) {
-				// System.out.println("Options Menu display: " + isOnScreen);
-				// pressedSingle = true;
-				// isOnScreen = false;
-				// Main.o.setOnScreen(true);
-				// Main.setState(GameState.OPTIONSMENU);
+				clickedOptions = true;
+				lastOptioned = System.currentTimeMillis();
+				System.out.println("Options Menu display: " + isOnScreen);
+				pressedSingle = true;
+				isOnScreen = false;
+				Main.o.setOnScreen(true);
+				Main.setState(GameState.OPTIONSMENU);
 			} else if (aboutus.isActivated()) {
 				// About Us menu
 			} else if (exit.isActivated()) {
+				AL.destroy();
 				setIsExited(true);
 			}
 			GL11.glEnable(GL11.GL_TEXTURE_2D);

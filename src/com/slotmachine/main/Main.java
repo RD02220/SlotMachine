@@ -1,25 +1,23 @@
 package com.slotmachine.main;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+import javax.sound.midi.Soundbank;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.examples.spaceinvaders.TextureLoader;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.*;
+import org.newdawn.slick.openal.SoundStore;
 
+import com.slotmachine.api.Sound;
 import com.slotmachine.db.DatabaseAccess;
 import com.slotmachine.menu.MainMenu;
 import com.slotmachine.menu.OptionsMenu;
@@ -32,6 +30,8 @@ public class Main {
 	public static Boolean isLoggedIn = false;
 	public static String username = "";
 	public static DatabaseAccess dbAccess = new DatabaseAccess();
+
+	public static Boolean isSoundOn = true, isMusicOn = true;
 
 	// Button Event Variables
 	Boolean isDown = false, isDown2 = false, ended = false;
@@ -69,8 +69,35 @@ public class Main {
 
 	Boolean fOnePressed = false;
 
+	int lastPlayedVolume = 0;
+	long lastChanged = 0;
+
 	public void gameloop() throws IOException {
+		if (lastChanged == 0)
+			lastChanged = System.currentTimeMillis();
 		while (!Display.isCloseRequested()) {
+			if (isMusicOn) {
+				if (MainMenu.textureLoader != null)
+					if (MainMenu.textureLoader.meadow != null)
+						if (!MainMenu.textureLoader.meadow.isPlaying()) {
+							lastPlayedVolume = OptionsMenu.volume;
+							if ((System.currentTimeMillis() - lastChanged) > 1500) {
+								Sound.playSound(3);
+							}
+						} else {
+							if (OptionsMenu.volume != lastPlayedVolume) {
+								lastChanged = System.currentTimeMillis();
+								MainMenu.textureLoader.meadow.stop();
+							}
+						}
+			} else {
+				if (MainMenu.textureLoader != null)
+					if (MainMenu.textureLoader.meadow != null)
+						if (MainMenu.textureLoader.meadow.isPlaying()) {
+							MainMenu.textureLoader.meadow.stop();
+						}
+			}
+			SoundStore.get().poll(0);
 			WD = Display.getWidth();
 			HT = Display.getHeight();
 
@@ -122,6 +149,7 @@ public class Main {
 			}
 
 		}
+		AL.destroy();
 		Display.destroy();
 	}
 
