@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 
@@ -57,6 +58,8 @@ public class SubMenu implements Component {
 		focused = set;
 	}
 
+	Boolean tabPresssed = false;
+
 	public void draw() {
 		anySubDragged = clickedWithin;
 		if (!minimized) {
@@ -69,10 +72,35 @@ public class SubMenu implements Component {
 					focused = true;
 				}
 			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_TAB) && !tabPresssed) {
+				tabPresssed = true;
+				Boolean theFocus = false;
+				a: for (Component c : menuComponents) {
+					try {
+						if (((MenuTextBoxV2) c) != null) {
+							if (!theFocus) {
+								if (((MenuTextBoxV2) c).isFocused()) {
+									((MenuTextBoxV2) c).setFocused(false);
+									theFocus = true;
+								}
+							} else {
+								if (!((MenuTextBoxV2) c).isFocused()) {
+									((MenuTextBoxV2) c).setFocused(true);
+									break a;
+								}
+							}
+						}
+					} catch (Exception e) {
+
+					}
+				}
+			} else if (!Keyboard.isKeyDown(Keyboard.KEY_TAB) && tabPresssed) {
+				tabPresssed = false;
+			}
 			Images.drawImage(MainMenu.textureLoader.subMenu, x + dragX, y
 					+ dragY);
 			MainMenu.textureLoader.textBoxTitle.drawString(x + 7 + dragX, y + 2
-					+ dragY, title + subMenuID);
+					+ dragY, title);
 			String minimize = " _ ";
 			String maximize = "[]";
 			String close = " X ";

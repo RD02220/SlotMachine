@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
@@ -21,7 +22,7 @@ import com.slotmachine.menu.components.TextBox;
 
 public class MainMenu {
 	public static MenuTextures textureLoader;
-	MenuButton start, options, aboutus, exit, users;
+	MenuButton start, options, aboutus, exit, logout, users;
 	TextBox box;
 	Boolean isExited = false, isOnScreen = true, pressedSingle = false;
 
@@ -51,7 +52,9 @@ public class MainMenu {
 		start = new MenuButton("Start Playing", 0);
 		options = new MenuButton("Options", 1);
 		aboutus = new MenuButton("About Us", 2);
+
 		exit = new MenuButton("Exit", 3);
+		logout = new MenuButton("Logout", 4);
 		box = new TextBox("Merlin's Ghost", "Lets play some slots!",
 				(Main.getWidth() / 2) + 15, 225);
 	}
@@ -80,8 +83,14 @@ public class MainMenu {
 			} else if (aboutus.isActivated()) {
 				// About Us menu
 			} else if (exit.isActivated()) {
+				System.out.println("Exited");
 				AL.destroy();
 				setIsExited(true);
+			} else if (logout.isActivated()) {
+				if (Main.isLoggedIn) {
+					Main.isLoggedIn = false;
+					System.out.println("Logged Out");
+				}
 			}
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -104,7 +113,12 @@ public class MainMenu {
 			start.draw();
 			options.draw();
 			aboutus.draw();
-			exit.draw();
+			if (Main.isLoggedIn) {
+				logout.draw();
+				exit.draw();
+			} else {
+				exit.draw();
+			}
 			if (start.isHovered()) {
 				box.setTitle("Start");
 				box.setBodyText("Lets play some slots!");
@@ -156,9 +170,17 @@ public class MainMenu {
 		if (createAccount.getOpened())
 			createAccount.draw();
 		if (createAccount.isSubMenuSubmitted()) {
-			System.out.println(createAccount.getUsername() + " "
-					+ createAccount.getPassword() + " "
-					+ createAccount.getPasswordConfirm());
+			if (!createAccount.getPassword().equals(
+					createAccount.getPasswordConfirm())) {
+				System.out.println("Passwords not equal!");
+			} else {
+				Main.dbAccess.registerPlayer(createAccount.getUsername(),
+						createAccount.getPassword());
+				System.out.println("Registering: "
+						+ createAccount.getUsername());
+				createAccount.setOpened(false);
+				login.setOpened(true);
+			}
 		}
 	}
 

@@ -40,6 +40,18 @@ public class MenuTextBoxV2 implements Component {
 
 	Boolean neverClicked = true;
 
+	public void setFocused(Boolean set) {
+		isFocused = set;
+	}
+
+	public Boolean isFocused() {
+		return isFocused;
+	}
+
+	public void setText(String t) {
+		startText = t;
+	}
+
 	public void draw() {
 		timeFlash = System.currentTimeMillis();
 		if (first) {
@@ -145,11 +157,27 @@ public class MenuTextBoxV2 implements Component {
 			Images.drawImage(MainMenu.textureLoader.writeTextBox, xPos, yPos);
 
 			if (timeFlash - lastFlash < 500) {
-				MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
-						yPos + 3, startText + "_");
+				String replace = "";
+				for (int i = 0; i < startText.toCharArray().length; i++) {
+					replace = replace + "*";
+				}
+				if (!isPass)
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, startText + "_");
+				else
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, replace + "_");
 			} else {
-				MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
-						yPos + 3, startText);
+				String replace = "";
+				for (int i = 0; i < startText.toCharArray().length; i++) {
+					replace = replace + "*";
+				}
+				if (!isPass)
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, startText);
+				else
+					MainMenu.textureLoader.textBoxTitle.drawString(xPos + 9,
+							yPos + 3, replace);
 				if (timeFlash - lastFlash > 1000) {
 					lastFlash = System.currentTimeMillis();
 				}

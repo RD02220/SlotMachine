@@ -25,7 +25,7 @@ public class OptionsMenu {
 	MenuTextBox textBox;
 	Boolean isExited = false, isOnScreen = false, pressedSingle = false;
 	Button mainMenu;
-	public static int volume = 5;
+	public static int volume = 2;
 	Label volumeL;
 
 	Texture vol1, vol2, vol3, vol4;
@@ -108,6 +108,8 @@ public class OptionsMenu {
 				pressed = false;
 			}
 			playSounds.draw();
+			volumeL.setX((Main.getWidth() / 2)
+					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 195);
 			volumeL.setLabel("Volume: " + volume);
 			volumeL.draw();
 			Rectangle up = new Rectangle(

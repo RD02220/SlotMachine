@@ -21,6 +21,7 @@ import com.slotmachine.api.Sound;
 import com.slotmachine.db.DatabaseAccess;
 import com.slotmachine.menu.MainMenu;
 import com.slotmachine.menu.OptionsMenu;
+import com.slotmachine.menu.components.Label;
 
 public class Main {
 	// Client Variables
@@ -51,6 +52,9 @@ public class Main {
 	// Game State
 	private static GameState gameState = GameState.STARTUPLOADING;
 
+	public String currentStatus = "";
+	public Label status;
+
 	public Main() throws Exception {
 		try {
 			WD = 800;
@@ -71,11 +75,15 @@ public class Main {
 
 	int lastPlayedVolume = 0;
 	long lastChanged = 0;
+	long lastTimeUploadedToSite = 0;
 
 	public void gameloop() throws IOException {
+		if (lastTimeUploadedToSite == 0)
+			lastTimeUploadedToSite = System.currentTimeMillis();
 		if (lastChanged == 0)
 			lastChanged = System.currentTimeMillis();
 		while (!Display.isCloseRequested()) {
+
 			if (isMusicOn) {
 				if (MainMenu.textureLoader != null)
 					if (MainMenu.textureLoader.meadow != null)
@@ -147,7 +155,24 @@ public class Main {
 				break;
 
 			}
+			if (status == null)
+				status = new Label("Status: " + currentStatus,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 195, 180);
+			if (isLoggedIn
+					&& (System.currentTimeMillis() - lastTimeUploadedToSite) > 15000) {
+				currentStatus = "Uploading the most recent data for "
+						+ username + " after " + (lastTimeUploadedToSite / 100)
+						+ " seconds";
+				status = new Label("Status: " + currentStatus, 10,
+						getHeight() - 20);
+				status.draw();
 
+				Main.dbAccess
+						.setCurrencyForPlayer(Main.username, Main.currency);
+				lastTimeUploadedToSite = System.currentTimeMillis();
+			}
 		}
 		AL.destroy();
 		Display.destroy();

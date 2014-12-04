@@ -482,7 +482,11 @@ public class SlotMachineTemp {
 				}
 				if ((System.currentTimeMillis() - stoppedAt) < 1500) {
 					if (checkWin) {
-
+						Images.drawImage(tiles.get(5), (prev + 31)
+								+ ((t * tiles.get(0).getImageWidth())),
+								(slotY + 44)
+										+ (i * tiles.get(0).getImageHeight())
+										- (i * 2));
 					} else {
 						Images.drawImage(tiles.get(5), (prev + 31)
 								+ ((t * tiles.get(0).getImageWidth())),
@@ -509,9 +513,6 @@ public class SlotMachineTemp {
 								Sound.playSound(2);
 								Main.currency = Main.currency + (betting * 3);
 							}
-							if (Main.isLoggedIn)
-								Main.dbAccess.setCurrencyForPlayer(
-										Main.username, Main.currency);
 						}
 						if (isAnimating) {
 							if (((System.currentTimeMillis() - startedAnimating)) < 600) {
