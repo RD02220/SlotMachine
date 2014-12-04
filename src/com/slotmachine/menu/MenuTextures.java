@@ -14,7 +14,7 @@ public class MenuTextures {
 
 	public Texture background, logo, button, buttonHover, textBox,
 			writeTextBox, subMenu, slotmachine, up, down;
-	public Texture coin1, coin2, coin3, coin4, coin5;
+	public Texture coin1, coin2, coin3, coin4, coin5, candle;
 	public TrueTypeFont font, textBoxTitle;
 	public FontMetrics metrics, metrics2;
 
@@ -64,5 +64,7 @@ public class MenuTextures {
 				.getResourceAsStream("textures/SlotMachine/4Coins.png"));
 		coin5 = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/SlotMachine/5Coins.png"));
+		candle = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/Candles/Candles.png"));
 	}
 }

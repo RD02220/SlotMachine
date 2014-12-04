@@ -32,7 +32,7 @@ public class SlotMachineTemp {
 
 	int betting = 1;
 	ArrayList<Texture> slotMachine = new ArrayList<Texture>();
-	ArrayList<Texture> candlesGlow = new ArrayList<Texture>();
+	ArrayList<Texture> candleFlick = new ArrayList<Texture>();
 	Texture slotAdd;
 
 	ArrayList<Texture> tiles = new ArrayList<Texture>();
@@ -58,6 +58,14 @@ public class SlotMachineTemp {
 					.getResourceAsStream("textures/SlotMachine/SlotMachine" + i
 							+ ".png"));
 			slotMachine.add(slotAdd);
+			i++;
+		}
+		i = 1;
+		while (i < 6) {
+			slotAdd = TextureLoader.getTexture("PNG", ResourceLoader
+					.getResourceAsStream("textures/Candles/CandleFlick" + i
+							+ ".png"));
+			candleFlick.add(slotAdd);
 			i++;
 		}
 		lever = new Button("Pull Lever", (Main.getWidth() / 2)
@@ -336,6 +344,7 @@ public class SlotMachineTemp {
 			currencyCounter.setLabel("Currency: " + Main.currency);
 			currencyCounter.draw();
 			drawTiles();
+			drawCandles();
 			mainMenu.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2));
 			mainMenu.draw();
@@ -346,6 +355,42 @@ public class SlotMachineTemp {
 			}
 			drawLogin();
 		}
+	}
+
+	int flick1 = 0;
+	int flick2 = 2;
+	int flick3 = 0;
+	int flick4 = 1;
+	int flick5 = 0;
+	int flick6 = 3;
+
+	long lastFlick = 0;
+
+	public void drawCandles() {
+		Images.drawImage(MainMenu.textureLoader.candle, slotX - 12, slotY - 20);
+		if (flick1 < 4) {
+			drawFlick(slotX + 27, slotY - 20, flick1);
+			drawFlick(slotX + 64, slotY - 16, flick1);
+			drawFlick(slotX + 130, slotY - 17, flick1);
+			drawFlick(slotX + 173, slotY - 16, flick1);
+			drawFlick(slotX + 230, slotY - 16, flick1);
+			drawFlick(slotX + 280, slotY - 20, flick1);
+			if (lastFlick != 0) {
+				if (System.currentTimeMillis() - lastFlick > 75) {
+					flick1++;
+					lastFlick = System.currentTimeMillis();
+				}
+			} else {
+				lastFlick = System.currentTimeMillis();
+			}
+		} else {
+			flick1 = 0;
+		}
+
+	}
+
+	public void drawFlick(int x, int y, int flicker) {
+		Images.drawImage(candleFlick.get(flicker), x, y);
 	}
 
 	int stopped = 1;
@@ -380,13 +425,13 @@ public class SlotMachineTemp {
 				if (!line1.isEmpty()) {
 					if (lineToUse != null) {
 						if (isAnimating
-								&& ((System.currentTimeMillis() - startedAnimating)) > 1500) {
+								&& ((System.currentTimeMillis() - startedAnimating)) > 1000) {
 							isAnimating = false;
 							stopped = 1;
 							f = 1;
 						}
 						if (isAnimating) {
-							if (((System.currentTimeMillis() - startedAnimating)) > 1000) {
+							if (((System.currentTimeMillis() - startedAnimating)) > 500) {
 
 								Images.drawImage(tiles.get(new Random()
 										.nextInt(8)), (prev + 31)
