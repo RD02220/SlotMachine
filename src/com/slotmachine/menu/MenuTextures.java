@@ -14,6 +14,7 @@ public class MenuTextures {
 
 	public Texture background, logo, button, buttonHover, textBox,
 			writeTextBox, subMenu, slotmachine, up, down;
+	public Texture coin1, coin2, coin3, coin4, coin5;
 	public TrueTypeFont font, textBoxTitle;
 	public FontMetrics metrics, metrics2;
 
@@ -49,9 +50,19 @@ public class MenuTextures {
 				.getResourceAsStream("textures/Menus/Components/SubMenu.png"));
 		slotmachine = TextureLoader.getTexture("PNG", ResourceLoader
 				.getResourceAsStream("textures/SlotMachine/SlotMachine1.png"));
-		up = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/Up.png"));
-		down = TextureLoader.getTexture("PNG", ResourceLoader
-				.getResourceAsStream("textures/Down.png"));
+		up = TextureLoader.getTexture("PNG",
+				ResourceLoader.getResourceAsStream("textures/Up.png"));
+		down = TextureLoader.getTexture("PNG",
+				ResourceLoader.getResourceAsStream("textures/Down.png"));
+		coin1 = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachine/1Coin.png"));
+		coin2 = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachine/2Coins.png"));
+		coin3 = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachine/3Coins.png"));
+		coin4 = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachine/4Coins.png"));
+		coin5 = TextureLoader.getTexture("PNG", ResourceLoader
+				.getResourceAsStream("textures/SlotMachine/5Coins.png"));
 	}
 }

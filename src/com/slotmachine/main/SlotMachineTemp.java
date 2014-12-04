@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -12,7 +13,6 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
-import com.slotmachine.api.Animation;
 import com.slotmachine.api.Images;
 import com.slotmachine.api.SpriteSheet;
 import com.slotmachine.backend.SlotFacade;
@@ -37,6 +37,10 @@ public class SlotMachineTemp {
 
 	ArrayList<Texture> tiles = new ArrayList<Texture>();
 	Texture tileAdd;
+
+	Boolean isAnimating = false;
+	long startedAnimating = 0;
+	ArrayList<Integer> orderToStop = new ArrayList<Integer>();
 
 	public SlotMachineTemp() throws IOException {
 		int i = 1;
@@ -93,6 +97,8 @@ public class SlotMachineTemp {
 
 	int slotX = 0, slotY = 0;
 
+	Boolean upPressed = false, downPressed = false;
+
 	public void drawSlot() throws IOException {
 		SlotFacade player = new SlotFacade();
 		if (isOnScreen) {
@@ -146,7 +152,17 @@ public class SlotMachineTemp {
 			if (Mouse.isButtonDown(0)
 					&& handle.contains(new Point(Mouse.getX(), Mouse.getY()))
 					&& !leverActivated) {
-
+				isAnimating = true;
+				startedAnimating = System.currentTimeMillis();
+				Random r = new Random();
+				orderToStop = new ArrayList<Integer>();
+				for (int s = 1; s < 10; s++) {
+					int ran = r.nextInt(10);
+					while (orderToStop.contains(ran) || ran == 0) {
+						ran = r.nextInt(10);
+					}
+					orderToStop.add(ran);
+				}
 				drawn = true;
 				leverActivated = true;
 				Main.currency--;
@@ -217,6 +233,48 @@ public class SlotMachineTemp {
 								- (MainMenu.textureLoader.slotmachine
 										.getImageWidth() / 2) + 10, 160);
 			}
+			Rectangle up = new Rectangle(
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 404, 235, 20, 20);
+			if (Mouse.isButtonDown(0)
+					&& up.contains(new Point(Mouse.getX(),
+							(Main.getHeight() - Mouse.getY()))) && !upPressed) {
+				System.out.println("Pressed Up");
+				upPressed = true;
+				if (betting < 5) {
+					betting++;
+				}
+			}
+			if (upPressed && !Mouse.isButtonDown(0)) {
+				upPressed = false;
+			}
+			Images.drawImage(
+					MainMenu.textureLoader.up,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 404, 235);
+			Rectangle down = new Rectangle(
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 404, 258, 20, 20);
+			if (Mouse.isButtonDown(0)
+					&& down.contains(new Point(Mouse.getX(),
+							(Main.getHeight() - Mouse.getY()))) && !downPressed) {
+				System.out.println("Pressed Down");
+				downPressed = true;
+				if (betting > 1) {
+					betting--;
+				}
+			}
+			if (downPressed && !Mouse.isButtonDown(0)) {
+				downPressed = false;
+			}
+			Images.drawImage(
+					MainMenu.textureLoader.down,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							+ 404, 258);
 			bettingCoins
 					.setX((Main.getWidth() / 2)
 							- (MainMenu.textureLoader.button.getImageWidth() / 2)
@@ -228,18 +286,40 @@ public class SlotMachineTemp {
 				bettingCoins.setLabel("Betting: " + betting + " coin");
 			else
 				bettingCoins.setLabel("Betting: " + betting + " coins");
-			Images.drawImage(
-					MainMenu.textureLoader.up,
-					(Main.getWidth() / 2)
-							- (MainMenu.textureLoader.button.getImageWidth() / 2)
-							+ 401, 235);
-			Images.drawImage(
-					MainMenu.textureLoader.down,
-					(Main.getWidth() / 2)
-							- (MainMenu.textureLoader.button.getImageWidth() / 2)
-							+ 401, 258);
-			bettingCoins.draw();
 
+			bettingCoins.draw();
+			if (betting == 1) {
+				Images.drawImage(
+						MainMenu.textureLoader.coin1,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 435, 240);
+			} else if (betting == 2) {
+				Images.drawImage(
+						MainMenu.textureLoader.coin2,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 435, 240);
+			} else if (betting == 3) {
+				Images.drawImage(
+						MainMenu.textureLoader.coin3,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 435, 240);
+			} else if (betting == 4) {
+				Images.drawImage(
+						MainMenu.textureLoader.coin4,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 435, 240);
+			}
+			if (betting == 5) {
+				Images.drawImage(
+						MainMenu.textureLoader.coin5,
+						(Main.getWidth() / 2)
+								- (MainMenu.textureLoader.button
+										.getImageWidth() / 2) + 435, 240);
+			}
 			reel1.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2) + 110);
 			reel2.setX((Main.getWidth() / 2)
@@ -268,6 +348,9 @@ public class SlotMachineTemp {
 		}
 	}
 
+	int stopped = 1;
+	long lastStop = 0;
+
 	public void drawTiles() {
 		String line1 = reel1.getLabelText();
 		String[] line1Split = line1.split(" ");
@@ -275,6 +358,8 @@ public class SlotMachineTemp {
 		String[] line2Split = line2.split(" ");
 		String line3 = reel3.getLabelText();
 		String[] line3Split = line3.split(" ");
+		int f = 1;
+		int total = 1;
 		for (int i = 0; i < 3; i++) {
 			for (int t = 0; t < 3; t++) {
 				int prev = slotX;
@@ -294,26 +379,92 @@ public class SlotMachineTemp {
 				}
 				if (!line1.isEmpty()) {
 					if (lineToUse != null) {
-						Texture tileToDraw = tiles.get(0);
-						if (lineToUse[t].equals("A")) {
-							tileToDraw = tiles.get(1);
-						} else if (lineToUse[t].equals("B")) {
-							tileToDraw = tiles.get(2);
-						} else if (lineToUse[t].equals("C")) {
-							tileToDraw = tiles.get(3);
-						} else if (lineToUse[t].equals("D")) {
-							tileToDraw = tiles.get(4);
-						} else if (lineToUse[t].equals("E")) {
-							tileToDraw = tiles.get(5);
+						if (isAnimating
+								&& ((System.currentTimeMillis() - startedAnimating)) > 1500) {
+							isAnimating = false;
+							stopped = 1;
+							f = 1;
+						}
+						if (isAnimating) {
+							if (((System.currentTimeMillis() - startedAnimating)) > 1000) {
+
+								Boolean stop = false;
+								int incr = 1;
+								for (Integer aq : orderToStop) {
+									if (incr < stopped
+											&& ((System.currentTimeMillis() - lastStop)) > 50) {
+										if (total == aq)
+											stop = true;
+									}
+									incr++;
+								}
+								if (!stop) {
+									Images.drawImage(tiles.get(new Random()
+											.nextInt(8)), (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								} else {
+									Texture tileToDraw = tiles.get(0);
+									if (lineToUse[t].equals("A")) {
+										tileToDraw = tiles.get(1);
+									} else if (lineToUse[t].equals("B")) {
+										tileToDraw = tiles.get(2);
+									} else if (lineToUse[t].equals("C")) {
+										tileToDraw = tiles.get(3);
+									} else if (lineToUse[t].equals("D")) {
+										tileToDraw = tiles.get(4);
+									} else if (lineToUse[t].equals("E")) {
+										tileToDraw = tiles.get(5);
+									}
+
+									Images.drawImage(tileToDraw, (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								}
+								lastStop = System.currentTimeMillis();
+								stopped++;
+							} else {
+								Images.drawImage(tiles.get(new Random()
+										.nextInt(8)), (prev + 31)
+										+ ((t * tiles.get(0).getImageWidth())),
+										(slotY + 44)
+												+ (i * tiles.get(0)
+														.getImageHeight())
+												- (i * 2));
+							}
+						} else if (!isAnimating) {
+							Texture tileToDraw = tiles.get(0);
+							if (lineToUse[t].equals("A")) {
+								tileToDraw = tiles.get(1);
+							} else if (lineToUse[t].equals("B")) {
+								tileToDraw = tiles.get(2);
+							} else if (lineToUse[t].equals("C")) {
+								tileToDraw = tiles.get(3);
+							} else if (lineToUse[t].equals("D")) {
+								tileToDraw = tiles.get(4);
+							} else if (lineToUse[t].equals("E")) {
+								tileToDraw = tiles.get(5);
+							}
+
+							Images.drawImage(tileToDraw, (prev + 31)
+									+ ((t * tiles.get(0).getImageWidth())),
+									(slotY + 44)
+											+ (i * tiles.get(0)
+													.getImageHeight())
+											- (i * 2));
 						}
 
-						Images.drawImage(tileToDraw, (prev + 31)
-								+ ((t * tiles.get(0).getImageWidth())),
-								(slotY + 44)
-										+ (i * tiles.get(0).getImageHeight())
-										- (i * 2));
 					}
 				}
+				total++;
 			}
 		}
 	}
