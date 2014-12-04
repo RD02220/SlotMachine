@@ -159,7 +159,8 @@ public class SlotMachineTemp {
 			Boolean drawn = false;
 			if (Mouse.isButtonDown(0)
 					&& handle.contains(new Point(Mouse.getX(), Mouse.getY()))
-					&& !leverActivated) {
+					&& !leverActivated && (Main.currency > betting)
+					&& Main.currency > 0 && !isAnimating) {
 				isAnimating = true;
 				startedAnimating = System.currentTimeMillis();
 				Random r = new Random();
@@ -173,7 +174,7 @@ public class SlotMachineTemp {
 				}
 				drawn = true;
 				leverActivated = true;
-				Main.currency--;
+				Main.currency = Main.currency - betting;
 				started = true;
 				down = true;
 				pulled = true;
@@ -184,7 +185,7 @@ public class SlotMachineTemp {
 				reel3.setLabel(player.getReelThree().trim());
 				checkWin = player.checkWinner();
 				if (checkWin)
-					Main.currency = Main.currency + 3;
+					Main.currency = Main.currency + (betting * 3);
 				if (Main.isLoggedIn)
 					Main.dbAccess.setCurrencyForPlayer(Main.username,
 							Main.currency);
@@ -341,13 +342,13 @@ public class SlotMachineTemp {
 			currencyCounter.setY(Main.getHeight() - 20);
 			winner.setX(15);
 			winner.setY(Main.getHeight() - 40);
-			currencyCounter.setLabel("Currency: " + Main.currency);
-			currencyCounter.draw();
+
 			drawTiles();
 			drawCandles();
 			mainMenu.setX((Main.getWidth() / 2)
 					- (MainMenu.textureLoader.button.getImageWidth() / 2));
 			mainMenu.draw();
+			drawMoney();
 			if (started) {
 				if (checkWin) {
 					winner.draw();
@@ -366,15 +367,68 @@ public class SlotMachineTemp {
 
 	long lastFlick = 0;
 
+	Boolean dancing = false;
+	long lastDancing = 0;
+
+	Boolean flashFirst = false;
+	long flashChange = 0;
+
 	public void drawCandles() {
+		if (flashChange == 0)
+			flashChange = System.currentTimeMillis();
+		Random r = new Random();
+		if (r.nextInt(300) == 75 && !dancing) {
+			lastDancing = System.currentTimeMillis();
+			dancing = true;
+		}
+		if (dancing && (System.currentTimeMillis() - lastDancing) > 3000) {
+			dancing = false;
+		}
 		Images.drawImage(MainMenu.textureLoader.candle, slotX - 12, slotY - 20);
+		Images.drawImage(MainMenu.textureLoader.sideCandle, slotX - 4,
+				slotY + 75);
+		Images.drawImage(MainMenu.textureLoader.sideCandle2, slotX + 269,
+				slotY + 75);
 		if (flick1 < 4) {
-			drawFlick(slotX + 27, slotY - 20, flick1);
-			drawFlick(slotX + 64, slotY - 16, flick1);
-			drawFlick(slotX + 130, slotY - 17, flick1);
-			drawFlick(slotX + 173, slotY - 16, flick1);
-			drawFlick(slotX + 230, slotY - 16, flick1);
-			drawFlick(slotX + 280, slotY - 20, flick1);
+			if (!dancing) {
+				drawFlick(slotX + 27, slotY - 20, flick1);
+				drawFlick(slotX + 64, slotY - 16, flick1);
+				drawFlick(slotX + 130, slotY - 17, flick1);
+				drawFlick(slotX + 173, slotY - 16, flick1);
+				drawFlick(slotX + 230, slotY - 16, flick1);
+				drawFlick(slotX + 280, slotY - 20, flick1);
+				drawFlick(slotX + 6, slotY + 74, flick1);
+				drawFlick(slotX + 6, slotY + 138, flick1);
+				drawFlick(slotX + 6, slotY + 228, flick1);
+
+				drawFlick(slotX + 290, slotY + 74, flick1);
+				drawFlick(slotX + 290, slotY + 138, flick1);
+				drawFlick(slotX + 290, slotY + 228, flick1);
+			} else {
+				if (flashFirst) {
+					drawFlick(slotX + 27, slotY - 20, flick1);
+					drawFlick(slotX + 130, slotY - 17, flick1);
+					drawFlick(slotX + 230, slotY - 16, flick1);
+					drawFlick(slotX + 6, slotY + 138, flick1);
+					drawFlick(slotX + 290, slotY + 138, flick1);
+					if ((System.currentTimeMillis() - flashChange) > 500) {
+						flashChange = System.currentTimeMillis();
+						flashFirst = false;
+					}
+				} else if (!flashFirst) {
+					drawFlick(slotX + 64, slotY - 16, flick1);
+					drawFlick(slotX + 173, slotY - 16, flick1);
+					drawFlick(slotX + 280, slotY - 20, flick1);
+					drawFlick(slotX + 6, slotY + 74, flick1);
+					drawFlick(slotX + 6, slotY + 228, flick1);
+					drawFlick(slotX + 290, slotY + 74, flick1);
+					drawFlick(slotX + 290, slotY + 228, flick1);
+					if ((System.currentTimeMillis() - flashChange) > 500) {
+						flashChange = System.currentTimeMillis();
+						flashFirst = true;
+					}
+				}
+			}
 			if (lastFlick != 0) {
 				if (System.currentTimeMillis() - lastFlick > 75) {
 					flick1++;
@@ -425,14 +479,13 @@ public class SlotMachineTemp {
 				if (!line1.isEmpty()) {
 					if (lineToUse != null) {
 						if (isAnimating
-								&& ((System.currentTimeMillis() - startedAnimating)) > 1000) {
+								&& ((System.currentTimeMillis() - startedAnimating)) > 1800) {
 							isAnimating = false;
 							stopped = 1;
 							f = 1;
 						}
 						if (isAnimating) {
-							if (((System.currentTimeMillis() - startedAnimating)) > 500) {
-
+							if (((System.currentTimeMillis() - startedAnimating)) < 600) {
 								Images.drawImage(tiles.get(new Random()
 										.nextInt(8)), (prev + 31)
 										+ ((t * tiles.get(0).getImageWidth())),
@@ -440,17 +493,71 @@ public class SlotMachineTemp {
 												+ (i * tiles.get(0)
 														.getImageHeight())
 												- (i * 2));
+							} else if (((System.currentTimeMillis() - startedAnimating)) >= 600
+									&& ((System.currentTimeMillis() - startedAnimating)) < 1200) {
+								if (t == 0) {
+									Texture tileToDraw = tiles.get(0);
+									if (lineToUse[t].equals("A")) {
+										tileToDraw = tiles.get(1);
+									} else if (lineToUse[t].equals("B")) {
+										tileToDraw = tiles.get(2);
+									} else if (lineToUse[t].equals("C")) {
+										tileToDraw = tiles.get(3);
+									} else if (lineToUse[t].equals("D")) {
+										tileToDraw = tiles.get(4);
+									} else if (lineToUse[t].equals("E")) {
+										tileToDraw = tiles.get(5);
+									}
 
-								lastStop = System.currentTimeMillis();
-								stopped++;
-							} else {
-								Images.drawImage(tiles.get(new Random()
-										.nextInt(8)), (prev + 31)
-										+ ((t * tiles.get(0).getImageWidth())),
-										(slotY + 44)
-												+ (i * tiles.get(0)
-														.getImageHeight())
-												- (i * 2));
+									Images.drawImage(tileToDraw, (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								} else {
+									Images.drawImage(tiles.get(new Random()
+											.nextInt(8)), (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								}
+							} else if (((System.currentTimeMillis() - startedAnimating)) >= 1200) {
+								if (t == 1 || t == 0) {
+									Texture tileToDraw = tiles.get(0);
+									if (lineToUse[t].equals("A")) {
+										tileToDraw = tiles.get(1);
+									} else if (lineToUse[t].equals("B")) {
+										tileToDraw = tiles.get(2);
+									} else if (lineToUse[t].equals("C")) {
+										tileToDraw = tiles.get(3);
+									} else if (lineToUse[t].equals("D")) {
+										tileToDraw = tiles.get(4);
+									} else if (lineToUse[t].equals("E")) {
+										tileToDraw = tiles.get(5);
+									}
+
+									Images.drawImage(tileToDraw, (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								} else {
+									Images.drawImage(tiles.get(new Random()
+											.nextInt(8)), (prev + 31)
+											+ ((t * tiles.get(0)
+													.getImageWidth())),
+											(slotY + 44)
+													+ (i * tiles.get(0)
+															.getImageHeight())
+													- (i * 2));
+								}
 							}
 						} else if (!isAnimating) {
 							Texture tileToDraw = tiles.get(0);
@@ -478,6 +585,65 @@ public class SlotMachineTemp {
 				}
 				total++;
 			}
+		}
+	}
+
+	public void drawMoney() {
+		currencyCounter.setX((Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) - 230);
+		currencyCounter.setY(360);
+		currencyCounter.setLabel(Main.currency + " coins");
+		currencyCounter.draw();
+		Images.drawImage(MainMenu.textureLoader.coin5, (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) - 180,
+				390);
+		Images.drawImage(MainMenu.textureLoader.coin1, (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) - 220,
+				390);
+		Images.drawImage(MainMenu.textureLoader.coin2, (Main.getWidth() / 2)
+				- (MainMenu.textureLoader.button.getImageWidth() / 2) - 200,
+				390);
+		for (int i = 0; i < Main.currency / 3; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 150, 390 - (i * 2));
+		}
+		for (int i = 0; i < Main.currency / 3; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 129, 394 - (i * 2));
+		}
+		for (int i = 0; i < (Main.currency / 3) - 7; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 110, 394 - (i * 2));
+		}
+		for (int i = 0; i < Main.currency / 5; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 155, 400 - (i * 2));
+		}
+		for (int i = 0; i < Main.currency / 4; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 130, 400 - (i * 2));
+		}
+		for (int i = 0; i < Main.currency / 7; i = i + 5) {
+			Images.drawImage(
+					MainMenu.textureLoader.coin5,
+					(Main.getWidth() / 2)
+							- (MainMenu.textureLoader.button.getImageWidth() / 2)
+							- 140, 400 - (i * 2));
 		}
 	}
 

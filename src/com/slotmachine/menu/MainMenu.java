@@ -90,18 +90,8 @@ public class MainMenu {
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			Color.white.bind();
 			drawBackground();
-			if (Main.getHeight() < 650) {
-				if ((Main.getHeight() - 650) + 75 > 0) {
-					Images.drawImage(textureLoader.logo, (Main.getWidth() / 2)
-							- (textureLoader.logo.getImageWidth() / 2),
-							(Main.getHeight() - 650) + 75);
-				} else {
-					Images.drawImage(textureLoader.logo, (Main.getWidth() / 2)
-							- (textureLoader.logo.getImageWidth() / 2), 1);
-				}
-			} else
-				Images.drawImage(textureLoader.logo, (Main.getWidth() / 2)
-						- (textureLoader.logo.getImageWidth() / 2), 75);
+			Images.drawImage(MainMenu.textureLoader.logo, (Main.getWidth() / 2)
+					- (MainMenu.textureLoader.logo.getImageWidth() / 2), 30);
 			start.draw();
 			options.draw();
 			aboutus.draw();
@@ -119,7 +109,7 @@ public class MainMenu {
 			} else if (aboutus.isHovered()) {
 				box.setTitle("About Us");
 				box.setBodyText("Matt Stratton/nRyan DeBerardino/nO'Neal Jones/nChad Golden");
-			}  else if (exit.isHovered()) {
+			} else if (exit.isHovered()) {
 				box.setTitle("Exit Merlin's Ghost?");
 				box.setBodyText("Exit the game? (But why would you want too?)");
 			}
